@@ -19,7 +19,9 @@ export function AppHeader({
     <header
       className={`sticky top-0 z-20 mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between bg-transparent px-5 sm:px-8 ${className}`.trim()}
     >
-      <div className="flex items-center gap-4">{left ?? defaultLeftContent()}</div>
+      <div className="flex items-center gap-4">
+        {left ?? defaultLeftContent()}
+      </div>
       <div className="flex items-center gap-3">{right}</div>
     </header>
   );
