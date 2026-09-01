@@ -191,7 +191,7 @@ export function B94EasyWorkspace() {
                   <Textarea
                     id="conreaj-text"
                     aria-label="Dados do CONREAJ"
-                    placeholder="Insira os dados do CONREAJ aqui"
+                    placeholder="Copie e cole a tabela do CONREAJ aqui"
                     className="min-h-[375px] resize-none border-0 bg-transparent p-5 text-sm shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60 sm:min-h-[178px]"
                     value={conreajText}
                     onChange={(event) => {
@@ -205,7 +205,7 @@ export function B94EasyWorkspace() {
                 </div>
                 <label
                   htmlFor="pdf-upload"
-                  className="group flex min-h-[178px] cursor-pointer items-center gap-4 rounded-xl border border-dashed border-border bg-card/90 px-5 transition-colors hover:border-primary/40 hover:bg-card"
+                  className="group flex min-h-[178px] w-full max-w-full cursor-pointer items-center gap-4 overflow-hidden rounded-xl border border-dashed border-border bg-card/90 px-5 transition-colors hover:border-primary/40 hover:bg-card"
                 >
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground transition-opacity group-hover:opacity-80">
                     {file ? (
@@ -214,11 +214,11 @@ export function B94EasyWorkspace() {
                       <FileUp className="size-5" />
                     )}
                   </span>
-                  <span className="min-w-0">
+                  <span className="min-w-0 flex-1 overflow-hidden">
                     <strong className="block truncate text-sm font-medium text-foreground">
                       {file ? file.name : "Adicionar PDF"}
                     </strong>
-                    <span className="mt-1 block text-xs text-muted-foreground">
+                    <span className="mt-1 block truncate text-xs text-muted-foreground">
                       {file ? "Pronto para análise" : "Resumo de Benefício"}
                     </span>
                   </span>

@@ -4,7 +4,10 @@ const wordmarkStyle = {
 
 export function B94Wordmark({ className = "text-lg" }: { className?: string }) {
   return (
-    <span className={`flex items-baseline tracking-[-0.06em] ${className}`} style={wordmarkStyle}>
+    <span
+      className={`flex items-baseline tracking-[-0.06em] ${className}`}
+      style={wordmarkStyle}
+    >
       <span className="leading-none text-[#0d4a86]">b</span>
       <span className="leading-none text-[#f3c75b]">9</span>
       <span className="leading-none text-[#2a9d5d]">4</span>
@@ -16,7 +19,11 @@ export function B94Wordmark({ className = "text-lg" }: { className?: string }) {
   );
 }
 
-export function SafiraWordmark({ className = "text-lg" }: { className?: string }) {
+export function SafiraWordmark({
+  className = "text-lg",
+}: {
+  className?: string;
+}) {
   return (
     <span
       className={`tracking-[-0.08em] text-primary ${className}`}
