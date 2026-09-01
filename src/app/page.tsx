@@ -1,26 +1,13 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AppHeader } from "@/components/app-header";
 import { B94Wordmark, SafiraWordmark } from "@/components/brand";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-      <header className="sticky top-0 z-20 mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between bg-transparent px-5 sm:px-8">
-        <Link
-          href="/"
-          className="group flex items-center gap-2 text-foreground no-underline"
-          aria-label="SAFIRA"
-        >
-          <span
-            className="size-2 rounded-full bg-primary shadow-[0_0_0_3px_var(--background)] transition-transform duration-300 group-hover:scale-125"
-            aria-hidden="true"
-          />
-          <SafiraWordmark />
-        </Link>
-        <ThemeToggle />
-      </header>
+      <AppHeader />
 
       <div className="relative z-10 mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-6xl items-start justify-center px-5 pb-10 pt-8 sm:px-8 sm:pt-14">
         <section className="mx-auto mt-6 flex max-w-4xl flex-col items-center text-center">

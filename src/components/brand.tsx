@@ -8,13 +8,13 @@ export function B94Wordmark({ className = "text-lg" }: { className?: string }) {
       className={`flex items-baseline tracking-[-0.06em] ${className}`}
       style={wordmarkStyle}
     >
-      <span className="leading-none text-[#0d4a86]">b</span>
+      <span className="leading-none text-[#0F52BA]">b</span>
       <span className="leading-none text-[#f3c75b]">9</span>
       <span className="leading-none text-[#2a9d5d]">4</span>
-      <span className="ml-1 leading-none text-[#0d4a86]">e</span>
+      <span className="ml-1 leading-none text-[#0F52BA]">e</span>
       <span className="leading-none text-[#f3c75b]">a</span>
       <span className="leading-none text-[#2a9d5d]">s</span>
-      <span className="leading-none text-[#0d4a86]">y</span>
+      <span className="leading-none text-[#0F52BA]">y</span>
     </span>
   );
 }

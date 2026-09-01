@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AlertCircle, Check, Clipboard, FileUp, RotateCcw } from "lucide-react";
+import { AppHeader } from "@/components/app-header";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +16,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { B94Wordmark, SafiraWordmark } from "@/components/brand";
 import {
   Tooltip,
@@ -150,30 +150,32 @@ export function B94EasyWorkspace() {
     <TooltipProvider>
       <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
         <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-        <header className="sticky top-0 z-20 mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between bg-transparent px-5 sm:px-8">
-          <div className="flex items-center gap-4">
-            <Link
-              href="/"
-              className="flex items-center gap-2 text-foreground no-underline"
-              aria-label="Voltar ao SAFIRA"
-            >
-              <span
-                className="size-2 rounded-full bg-primary shadow-[0_0_0_3px_var(--background)]"
-                aria-hidden="true"
-              />
-              <SafiraWordmark className="text-sm text-muted-foreground" />
-            </Link>
-            <button
-              type="button"
-              className="group flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-foreground"
-              aria-label="Recarregar página"
-              onClick={() => window.location.reload()}
-            >
-              <B94Wordmark />
-            </button>
-          </div>
-          <ThemeToggle />
-        </header>
+        <AppHeader
+          left={
+            <div className="flex items-center gap-4">
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-foreground no-underline"
+                aria-label="Voltar ao SAFIRA"
+              >
+                <img
+                  src="/safira.png"
+                  alt="SAFIRA"
+                  className="h-7 w-7 rounded-full object-cover shadow-[0_0_0_3px_var(--background)]"
+                />
+                <SafiraWordmark className="text-sm text-muted-foreground" />
+              </Link>
+              <button
+                type="button"
+                className="group flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-foreground"
+                aria-label="Recarregar página"
+                onClick={() => window.location.reload()}
+              >
+                <B94Wordmark />
+              </button>
+            </div>
+          }
+        />
 
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
           {!blocks.length ? (
