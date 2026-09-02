@@ -38,7 +38,9 @@ export async function copyBlockToExcel(
 
   try {
     if (!document.execCommand("copy")) {
-      throw new Error("Não foi possível copiar o bloco para a área de transferência.");
+      throw new Error(
+        "Não foi possível copiar o bloco para a área de transferência.",
+      );
     }
   } finally {
     textarea.remove();

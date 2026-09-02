@@ -35,6 +35,7 @@ export function B94EasyWorkspace() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [alertType, setAlertType] = useState<"warning" | "error">("error");
+  const [copiedPeriod, setCopiedPeriod] = useState<string | null>(null);
 
   const handleProcess = async () => {
     if (!conreajText.trim()) {
@@ -108,6 +109,21 @@ export function B94EasyWorkspace() {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCopy = async (block: B94Block) => {
+    try {
+      await copyBlockToExcel(block.rows, block.columns);
+      setCopiedPeriod(block.period);
+      window.setTimeout(() => setCopiedPeriod(null), 2500);
+    } catch (copyError) {
+      setAlertType("error");
+      setError(
+        copyError instanceof Error
+          ? copyError.message
+          : "Não foi possível copiar os valores.",
+      );
     }
   };
 
@@ -299,7 +315,9 @@ export function B94EasyWorkspace() {
                       </CardTitle>
                       <div className="flex items-center gap-1">
                         <span className="text-xs text-muted-foreground">
-                          Copiar valores
+                          {copiedPeriod === block.period
+                            ? "Valores copiados"
+                            : "Copiar valores"}
                         </span>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -307,15 +325,25 @@ export function B94EasyWorkspace() {
                               variant="ghost"
                               size="icon"
                               className="group size-10 cursor-pointer border-0 bg-transparent p-0 hover:bg-transparent hover:text-foreground focus-visible:ring-0"
-                              onClick={() =>
-                                copyBlockToExcel(block.rows, block.columns)
+                              onClick={() => handleCopy(block)}
+                              aria-label={
+                                copiedPeriod === block.period
+                                  ? "Valores copiados"
+                                  : "Copiar valores"
                               }
-                              aria-label="Copiar valores"
                             >
-                              <Clipboard className="size-5 transition-opacity duration-200 group-hover:opacity-60" />
+                              {copiedPeriod === block.period ? (
+                                <Check className="size-5 text-emerald-600" />
+                              ) : (
+                                <Clipboard className="size-5 transition-opacity duration-200 group-hover:opacity-60" />
+                              )}
                             </Button>
                           </TooltipTrigger>
-                          <TooltipContent>Copiar valores</TooltipContent>
+                          <TooltipContent>
+                            {copiedPeriod === block.period
+                              ? "Valores copiados"
+                              : "Copiar valores"}
+                          </TooltipContent>
                         </Tooltip>
                       </div>
                     </CardHeader>
