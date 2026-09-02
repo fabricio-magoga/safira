@@ -19,26 +19,31 @@ const YEAR_PATTERN = /\b(?:19|20)\d{2}\b/g;
 const MONTH_LINE = /^\s*(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\b(.*)$/i;
 const MONEY = /\d[\d.]*,\d{1,2}/g;
 
-function cellsFromBang(line: string): string[] {
+function cellsFromTable(line: string): string[] {
+  const separator = line.includes("!") ? "!" : line.includes("|") ? "|" : null;
+  if (!separator) return [];
+
   return line
-    .split("!")
+    .split(separator)
     .map((cell) => cell.trim())
     .filter(Boolean);
 }
 
 function pdfPrismaHasContribution(cell: string): boolean {
   const values = cell.match(MONEY) ?? [];
-  if (values.length < 2) return false;
-  const prismaValue = values[1].replace(/\./g, "").replace(",", ".");
-  return Number(prismaValue) > 0;
+  const prismaValue = values.at(-1);
+  if (!prismaValue) return false;
+
+  const normalizedValue = prismaValue.replace(/\./g, "").replace(",", ".");
+  return Number(normalizedValue) > 0;
 }
 
 function monthCells(line: string): { month: string; cells: string[] } | null {
-  const bangCells = cellsFromBang(line);
-  if (bangCells.length) {
-    const month = bangCells[0].toUpperCase().replace(/[.:;]+$/, "");
+  const tableCells = cellsFromTable(line);
+  if (tableCells.length) {
+    const month = tableCells[0].toUpperCase().replace(/[.:;]+$/, "");
     if ((MONTHS as readonly string[]).includes(month)) {
-      return { month, cells: bangCells.slice(1) };
+      return { month, cells: tableCells.slice(1) };
     }
   }
 
@@ -68,11 +73,12 @@ export function extractB94Matrices(
 
     for (const rawLine of lines) {
       const line = rawLine.trim();
-      const bangCells = cellsFromBang(line);
+      const tableCells = cellsFromTable(line);
+      const headerCell = tableCells[0]?.replace(/\\/g, "/").toUpperCase();
 
       if (
-        (bangCells.length && bangCells[0].toUpperCase() === "M/A") ||
-        /^M\/A\b/i.test(line)
+        (headerCell === "M/A" && tableCells.length > 0) ||
+        /^M[\\/]A\b/i.test(line)
       ) {
         const years = [...rawLine.matchAll(new RegExp(YEAR_PATTERN))].map(
           (match) => Number(match[0]),
