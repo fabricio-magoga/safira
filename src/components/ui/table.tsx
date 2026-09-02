@@ -32,7 +32,7 @@ export function TableRow({
 }: HTMLAttributes<HTMLTableRowElement>) {
   return (
     <tr
-      className={cn("border-b transition-colors hover:bg-muted/50", className)}
+      className={cn("border-b hover:bg-muted/50", className)}
       {...props}
     />
   );
