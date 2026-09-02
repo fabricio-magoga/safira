@@ -6,7 +6,10 @@ export function Table({
   ...props
 }: HTMLAttributes<HTMLTableElement>) {
   return (
-    <table className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    <table
+      className={cn("w-full caption-bottom text-sm", className)}
+      {...props}
+    />
   );
 }
 
@@ -31,10 +34,7 @@ export function TableRow({
   ...props
 }: HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr
-      className={cn("border-b hover:bg-muted/50", className)}
-      {...props}
-    />
+    <tr className={cn("border-b hover:bg-muted/50", className)} {...props} />
   );
 }
 
