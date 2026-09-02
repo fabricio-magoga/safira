@@ -24,7 +24,7 @@ export default function Home() {
           <div className="w-full max-w-2xl">
             <Link
               href="/b94easy"
-              className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-card/90 px-5 py-5 text-left no-underline shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] transition-colors hover:border-primary/40 hover:bg-card"
+              className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-card/90 px-5 py-5 text-left no-underline shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] hover:border-primary/40 hover:bg-card"
             >
               <div>
                 <B94Wordmark className="text-2xl sm:text-3xl" />

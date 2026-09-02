@@ -25,15 +25,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(() => {
+              try {
+                const theme = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+                document.documentElement.classList.remove("light", "dark");
+                document.documentElement.classList.add(theme);
+                document.documentElement.style.colorScheme = theme;
+              } catch {}
+            })();`,
+          }}
+        />
+      </head>
       <body className="min-h-full">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
