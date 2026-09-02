@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Info } from "lucide-react";
 import type { ReactNode } from "react";
 import { SafiraWordmark } from "@/components/brand";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
 
 type AppHeaderProps = {
   left?: ReactNode;
@@ -22,7 +24,20 @@ export function AppHeader({
       <div className="flex items-center gap-4">
         {left ?? defaultLeftContent()}
       </div>
-      <div className="flex items-center gap-3">{right}</div>
+      <div className="flex items-center gap-1">
+        <Link href="/sobre" aria-label="Sobre o SAFIRA">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="group size-10 border-0 bg-transparent p-0 hover:bg-transparent hover:text-foreground focus-visible:ring-0"
+            aria-hidden="true"
+            tabIndex={-1}
+          >
+            <Info className="size-5 transition-opacity duration-200 group-hover:opacity-60" />
+          </Button>
+        </Link>
+        {right}
+      </div>
     </header>
   );
 }

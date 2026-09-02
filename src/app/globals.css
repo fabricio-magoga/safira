@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -24,7 +26,7 @@
   --foreground: #12395b;
   --card: #f9fbff;
   --card-foreground: #12395b;
-  --primary: #0F52BA;
+  --primary: #0f52ba;
   --primary-foreground: #ffffff;
   --secondary: #eaf2ff;
   --secondary-foreground: #12395b;
@@ -50,7 +52,7 @@
   --foreground: #ebf4ff;
   --card: #02090f;
   --card-foreground: #ebf4ff;
-  --primary: #0F52BA;
+  --primary: #0f52ba;
   --primary-foreground: #ffffff;
   --secondary: #123c67;
   --secondary-foreground: #ebf4ff;
