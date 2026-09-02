@@ -355,7 +355,7 @@ export function B94EasyWorkspace() {
                             {block.columns.map((year) => (
                               <TableHead
                                 key={year}
-                                className="text-right font-mono text-[11px] text-primary"
+                                className="text-right font-mono text-xs font-medium text-muted-foreground"
                               >
                                 {year}
                               </TableHead>
