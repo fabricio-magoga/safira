@@ -1,7 +1,7 @@
 import { B94EasyAreaTrabalho } from "@/components/b94/b94-easy-workspace";
 
 export const metadata = {
-  title: "SAFIRA - b94+",
+  title: "b94+ | SAFIRA",
   description: "Módulo B94+ do SAFIRA.",
 };
 

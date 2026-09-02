@@ -4,7 +4,7 @@ import { Cabecalho } from "@/components/app-header";
 import { SafiraLogotipo } from "@/components/brand";
 
 export const metadata = {
-  title: "SAFIRA - Sobre",
+  title: "Sobre | SAFIRA",
   description: "Sobre o SAFIRA.",
 };
 
@@ -48,8 +48,8 @@ export default function PaginaSobre() {
                     Copie e Cole os dados do CONREAJ
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    No SIBE, copie a tabela do CONREAJ, vá para a tela do
-                    B94+ e cole o texto normalmente no campo indicado. O sistema
+                    No SIBE, copie a tabela do CONREAJ, vá para a tela do B94+ e
+                    cole o texto normalmente no campo indicado. O sistema
                     filtrará os dados automaticamente.
                   </p>
                 </div>
@@ -84,10 +84,10 @@ export default function PaginaSobre() {
                     Aplique e copie
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Clique em "Aplicar B94+". Os resultados serão agrupados
-                    por ano e mês. O sistema comparará os valores do PDF com os
-                    do CONREAJ e exibirá os resultados. Clique em "Copiar
-                    Valores" para copiar os dados e colá-los no PRISMA.
+                    Clique em "Aplicar B94+". Os resultados serão agrupados por
+                    ano e mês. O sistema comparará os valores do PDF com os do
+                    CONREAJ e exibirá os resultados. Clique em "Copiar Valores"
+                    para copiar os dados e colá-los no PRISMA.
                   </p>
                 </div>
               </div>
@@ -160,7 +160,7 @@ export default function PaginaSobre() {
             </div>
           </div>
         </section>
-      </div>   
+      </div>
     </main>
   );
 }
