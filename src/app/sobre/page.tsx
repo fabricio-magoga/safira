@@ -29,7 +29,7 @@ export default function SobrePage() {
               guia rápido
             </p>
             <h1 className="text-4xl font-black tracking-[-0.08em] sm:text-6xl">
-              como usar o <SafiraWordmark className="text-4xl sm:text-6xl" />
+              <SafiraWordmark className="text-4xl sm:text-6xl" />
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
               Organize os dados do CONREAJ e extraia os valores PRISMA do PDF em
@@ -40,7 +40,7 @@ export default function SobrePage() {
           <div className="space-y-3">
             <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
               <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground">
                   01
                 </span>
                 <div>
@@ -58,7 +58,7 @@ export default function SobrePage() {
 
             <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
               <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground ">
                   02
                 </span>
                 <div>
@@ -76,7 +76,7 @@ export default function SobrePage() {
 
             <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
               <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground ">
                   03
                 </span>
                 <div>
@@ -95,7 +95,7 @@ export default function SobrePage() {
 
             <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
               <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground  ">
                   04
                 </span>
                 <div>
@@ -160,7 +160,7 @@ export default function SobrePage() {
             </div>
           </div>
         </section>
-      </div>
+      </div>   
     </main>
   );
 }
