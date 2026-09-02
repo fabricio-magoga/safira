@@ -207,7 +207,7 @@ export function B94EasyWorkspace() {
                 </div>
                 <label
                   htmlFor="pdf-upload"
-                  className="group flex min-h-[178px] w-full max-w-full cursor-pointer items-center gap-4 overflow-hidden rounded-xl border border-dashed border-border bg-card/90 px-5 transition-colors hover:border-primary/40 hover:bg-card"
+                  className="group flex min-h-[178px] w-full max-w-full cursor-pointer items-center gap-4 overflow-hidden rounded-xl border border-dashed border-border bg-card/90 px-5 hover:border-primary/40 hover:bg-card"
                 >
                   <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground transition-opacity group-hover:opacity-80">
                     {file ? (
