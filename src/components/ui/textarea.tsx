@@ -1,7 +1,7 @@
 import type { TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export function Textarea({
+export function AreaTexto({
   className = "",
   ...props
 }: TextareaHTMLAttributes<HTMLTextAreaElement>) {

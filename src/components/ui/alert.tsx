@@ -2,7 +2,7 @@ import type { HTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
-const alertVariants = cva(
+const variantesAlerta = cva(
   "relative w-full rounded-lg border px-4 py-3 text-sm",
   {
     variants: {
@@ -18,14 +18,14 @@ const alertVariants = cva(
   },
 );
 
-export type AlertProps = HTMLAttributes<HTMLDivElement> &
-  VariantProps<typeof alertVariants>;
+export type PropsAlerta = HTMLAttributes<HTMLDivElement> &
+  VariantProps<typeof variantesAlerta>;
 
-export function Alert({ className, variant, ...props }: AlertProps) {
+export function Alerta({ className, variant, ...props }: PropsAlerta) {
   return (
     <div
       role="alert"
-      className={cn(alertVariants({ variant }), className)}
+      className={cn(variantesAlerta({ variant }), className)}
       {...props}
     />
   );

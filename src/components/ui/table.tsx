@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ThHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export function Table({
+export function Tabela({
   className,
   ...props
 }: HTMLAttributes<HTMLTableElement>) {
@@ -13,14 +13,14 @@ export function Table({
   );
 }
 
-export function TableHeader({
+export function TabelaCabecalho({
   className,
   ...props
 }: HTMLAttributes<HTMLTableSectionElement>) {
   return <thead className={cn("[&_tr]:border-b", className)} {...props} />;
 }
 
-export function TableBody({
+export function TabelaCorpo({
   className,
   ...props
 }: HTMLAttributes<HTMLTableSectionElement>) {
@@ -29,7 +29,7 @@ export function TableBody({
   );
 }
 
-export function TableRow({
+export function TabelaLinha({
   className,
   ...props
 }: HTMLAttributes<HTMLTableRowElement>) {
@@ -38,7 +38,7 @@ export function TableRow({
   );
 }
 
-export function TableHead({
+export function TabelaCelulaCab({
   className,
   ...props
 }: ThHTMLAttributes<HTMLTableCellElement>) {
@@ -53,7 +53,7 @@ export function TableHead({
   );
 }
 
-export function TableCell({
+export function TabelaCelula({
   className,
   ...props
 }: HTMLAttributes<HTMLTableCellElement>) {

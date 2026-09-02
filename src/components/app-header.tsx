@@ -2,31 +2,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { Info } from "lucide-react";
 import type { ReactNode } from "react";
-import { SafiraWordmark } from "@/components/brand";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { SafiraLogotipo } from "@/components/brand";
+import { AlternarTema } from "@/components/theme-toggle";
+import { Botao } from "@/components/ui/button";
 
-type AppHeaderProps = {
-  left?: ReactNode;
-  right?: ReactNode;
+type PropsCabecalho = {
+  esquerda?: ReactNode;
+  direita?: ReactNode;
   className?: string;
 };
 
-export function AppHeader({
-  left,
-  right = <ThemeToggle />,
+export function Cabecalho({
+  esquerda,
+  direita = <AlternarTema />,
   className = "",
-}: AppHeaderProps) {
+}: PropsCabecalho) {
   return (
     <header
       className={`sticky top-0 z-20 mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between bg-transparent px-5 sm:px-8 ${className}`.trim()}
     >
       <div className="flex items-center gap-4">
-        {left ?? defaultLeftContent()}
+        {esquerda ?? conteudoEsquerdaPadrao()}
       </div>
       <div className="flex items-center gap-1">
         <Link href="/sobre" aria-label="Sobre o SAFIRA">
-          <Button
+          <Botao
             variant="ghost"
             size="icon"
             className="group size-10 border-0 bg-transparent p-0 hover:bg-transparent hover:text-foreground focus-visible:ring-0"
@@ -34,15 +34,15 @@ export function AppHeader({
             tabIndex={-1}
           >
             <Info className="size-5 transition-opacity duration-200 group-hover:opacity-60" />
-          </Button>
+          </Botao>
         </Link>
-        {right}
+        {direita}
       </div>
     </header>
   );
 }
 
-function defaultLeftContent() {
+function conteudoEsquerdaPadrao() {
   return (
     <Link
       href="/"
@@ -56,7 +56,7 @@ function defaultLeftContent() {
         height={28}
         className="rounded-full object-cover shadow-[0_0_0_3px_var(--background)] transition-transform duration-300 group-hover:scale-110"
       />
-      <SafiraWordmark />
+      <SafiraLogotipo />
     </Link>
   );
 }

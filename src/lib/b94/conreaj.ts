@@ -1,46 +1,46 @@
-const DATE_PATTERN = /^\s*\d{2}\/((?:19|20)\d{2})\b/;
-const VALUE_PATTERN = /[\d.]+(?:,\d{1,2})?/g;
-const VALUE_FULL = /^[\d.]+(?:,\d{1,2})?$/;
+const PADRAO_DATA = /^\s*\d{2}\/((?:19|20)\d{2})\b/;
+const PADRAO_VALOR = /[\d.]+(?:,\d{1,2})?/g;
+const VALOR_COMPLETO = /^[\d.]+(?:,\d{1,2})?$/;
 
-export function parseConreajText(rawText: string): Map<number, number> {
-  const data = new Map<number, number>();
+export function analisarConreaj(textoOriginal: string): Map<number, number> {
+  const dados = new Map<number, number>();
 
-  for (const line of rawText.split(/\r?\n/)) {
-    const dateMatch = line.match(DATE_PATTERN);
-    if (!dateMatch) continue;
+  for (const linha of textoOriginal.split(/\r?\n/)) {
+    const matchData = linha.match(PADRAO_DATA);
+    if (!matchData) continue;
 
-    const cells = line.split("\t").map((cell) => cell.trim());
-    const year = Number(dateMatch[1]);
-    const rest = line.slice(dateMatch[0].length);
-    const values = [...rest.matchAll(VALUE_PATTERN)].map((match) => match[0]);
-    let correctedValue: string;
-    let previousValue: string;
+    const celulas = linha.split("\t").map((cel) => cel.trim());
+    const ano = Number(matchData[1]);
+    const resto = linha.slice(matchData[0].length);
+    const valores = [...resto.matchAll(PADRAO_VALOR)].map((m) => m[0]);
+    let valorCorrigido: string;
+    let valorAnterior: string;
 
-    if (cells.length >= 5) {
-      previousValue = cells[1] ?? "";
-      correctedValue = cells[4] ?? "";
+    if (celulas.length >= 5) {
+      valorAnterior = celulas[1] ?? "";
+      valorCorrigido = celulas[4] ?? "";
     } else {
-      previousValue = values[0] ?? "";
-      correctedValue = values.at(-1) ?? "";
+      valorAnterior = valores[0] ?? "";
+      valorCorrigido = valores.at(-1) ?? "";
     }
 
-    if (VALUE_FULL.test(previousValue)) {
-      const cleanPreviousValue = previousValue
+    if (VALOR_COMPLETO.test(valorAnterior)) {
+      const anteriorLimpo = valorAnterior
         .replace(/\./g, "")
         .replace(",", ".");
-      data.set(year - 1, Number(cleanPreviousValue));
+      dados.set(ano - 1, Number(anteriorLimpo));
     }
 
-    if (!VALUE_FULL.test(correctedValue)) continue;
+    if (!VALOR_COMPLETO.test(valorCorrigido)) continue;
 
-    const cleanValue = correctedValue.replace(/\./g, "").replace(",", ".");
-    data.set(year, Number(cleanValue));
+    const valorLimpo = valorCorrigido.replace(/\./g, "").replace(",", ".");
+    dados.set(ano, Number(valorLimpo));
   }
 
-  return data;
+  return dados;
 }
 
-export function getFirstConreajYear(text: string): number | null {
-  const match = text.match(/^\s*\d{2}\/((?:19|20)\d{2})\b/m);
+export function obterPrimeiroAnoConreaj(texto: string): number | null {
+  const match = texto.match(/^\s*\d{2}\/((?:19|20)\d{2})\b/m);
   return match ? Number(match[1]) - 1 : null;
 }

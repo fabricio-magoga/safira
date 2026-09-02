@@ -1,6 +1,6 @@
 import { extractTextItems } from "unpdf";
 
-type TextSpan = {
+type TrechoTexto = {
   str: string;
   x: number;
   y: number;
@@ -8,41 +8,41 @@ type TextSpan = {
   hasEOL?: boolean;
 };
 
-const Y_TOLERANCE = 3;
-const X_TOLERANCE = 2;
+const TOLERANCIA_Y = 3;
+const TOLERANCIA_X = 2;
 
-function spansToLines(spans: TextSpan[]): string[] {
-  const sorted = [...spans].sort((a, b) => b.y - a.y || a.x - b.x);
-  const grouped: TextSpan[][] = [];
+function trechosParaLinhas(trechos: TrechoTexto[]): string[] {
+  const ordenados = [...trechos].sort((a, b) => b.y - a.y || a.x - b.x);
+  const agrupados: TrechoTexto[][] = [];
 
-  for (const span of sorted) {
-    const lastLine = grouped.at(-1);
-    if (lastLine && Math.abs(lastLine[0].y - span.y) <= Y_TOLERANCE) {
-      lastLine.push(span);
+  for (const trecho of ordenados) {
+    const ultimaLinha = agrupados.at(-1);
+    if (ultimaLinha && Math.abs(ultimaLinha[0].y - trecho.y) <= TOLERANCIA_Y) {
+      ultimaLinha.push(trecho);
     } else {
-      grouped.push([span]);
+      agrupados.push([trecho]);
     }
   }
 
-  return grouped.map((line) => {
-    line.sort((a, b) => a.x - b.x);
-    let text = "";
-    for (let index = 0; index < line.length; index += 1) {
-      const span = line[index];
-      if (index > 0) {
-        const previous = line[index - 1];
-        const gap = span.x - (previous.x + previous.width);
-        if (gap > X_TOLERANCE) text += " ";
+  return agrupados.map((linha) => {
+    linha.sort((a, b) => a.x - b.x);
+    let texto = "";
+    for (let i = 0; i < linha.length; i += 1) {
+      const trecho = linha[i];
+      if (i > 0) {
+        const anterior = linha[i - 1];
+        const espaco = trecho.x - (anterior.x + anterior.width);
+        if (espaco > TOLERANCIA_X) texto += " ";
       }
-      text += span.str;
+      texto += trecho.str;
     }
-    return text.replace(/\s+$/g, "");
+    return texto.replace(/\s+$/g, "");
   });
 }
 
-export async function extractPdfPageLines(
-  data: Uint8Array,
+export async function extrairLinhasPdf(
+  dados: Uint8Array,
 ): Promise<string[][]> {
-  const { items } = await extractTextItems(data);
-  return items.map((pageItems) => spansToLines(pageItems));
+  const { items } = await extractTextItems(dados);
+  return items.map((itensPagina) => trechosParaLinhas(itensPagina));
 }

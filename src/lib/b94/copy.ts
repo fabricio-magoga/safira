@@ -1,40 +1,40 @@
-import type { CellValue } from "./types";
-import { formatCopyValue } from "./format";
+import type { ValorCelula } from "./types";
+import { formatarCopia } from "./format";
 
-export async function copyBlockToExcel(
-  rows: Record<string, CellValue[]>,
-  columns: number[],
+export async function copiarBloco(
+  linhas: Record<string, ValorCelula[]>,
+  colunas: number[],
 ): Promise<void> {
-  const lines: string[] = [];
+  const itens: string[] = [];
 
-  columns.forEach((_, index) => {
-    Object.values(rows).forEach((values) => {
-      const value = values[index];
-      if (value === undefined || value === null) {
+  colunas.forEach((_, indice) => {
+    Object.values(linhas).forEach((valores) => {
+      const valor = valores[indice];
+      if (valor === undefined || valor === null) {
         return;
       }
 
-      const formatted = formatCopyValue(value);
-      if (formatted !== null) {
-        lines.push(formatted);
+      const formatado = formatarCopia(valor);
+      if (formatado !== null) {
+        itens.push(formatado);
       }
     });
   });
 
-  const text = lines.join("\n");
+  const texto = itens.join("\n");
 
   if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
+    await navigator.clipboard.writeText(texto);
     return;
   }
 
-  const textarea = document.createElement("textarea");
-  textarea.value = text;
-  textarea.setAttribute("readonly", "");
-  textarea.style.position = "fixed";
-  textarea.style.opacity = "0";
-  document.body.appendChild(textarea);
-  textarea.select();
+  const areaTexto = document.createElement("textarea");
+  areaTexto.value = texto;
+  areaTexto.setAttribute("readonly", "");
+  areaTexto.style.position = "fixed";
+  areaTexto.style.opacity = "0";
+  document.body.appendChild(areaTexto);
+  areaTexto.select();
 
   try {
     if (!document.execCommand("copy")) {
@@ -43,6 +43,6 @@ export async function copyBlockToExcel(
       );
     }
   } finally {
-    textarea.remove();
+    areaTexto.remove();
   }
 }

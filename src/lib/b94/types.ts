@@ -1,9 +1,9 @@
-export type CellValue = number | string;
+export type ValorCelula = number | string;
 
-export type B94Block = {
-  period: string;
-  columns: number[];
-  rows: Record<string, CellValue[]>;
+export type BlocoB94 = {
+  periodo: string;
+  colunas: number[];
+  linhas: Record<string, ValorCelula[]>;
 };
 
-export type ConreajIndex = Map<number, number>;
+export type IndiceConreaj = Map<number, number>;

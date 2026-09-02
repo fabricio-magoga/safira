@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowLeft, ExternalLink, Mail } from "lucide-react";
-import { AppHeader } from "@/components/app-header";
-import { SafiraWordmark } from "@/components/brand";
+import { Cabecalho } from "@/components/app-header";
+import { SafiraLogotipo } from "@/components/brand";
 
 export const metadata = {
   title: "SAFIRA - Sobre",
   description: "Sobre o SAFIRA.",
 };
 
-export default function SobrePage() {
+export default function PaginaSobre() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
       <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-      <AppHeader />
+      <Cabecalho />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
         <section className="mx-auto max-w-3xl">
@@ -29,7 +29,7 @@ export default function SobrePage() {
               guia rápido
             </p>
             <h1 className="text-4xl font-black tracking-[-0.08em] sm:text-6xl">
-              <SafiraWordmark className="text-4xl sm:text-6xl" />
+              <SafiraLogotipo className="text-4xl sm:text-6xl" />
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
               Organize os dados do CONREAJ e extraia os valores PRISMA do PDF em
@@ -48,8 +48,8 @@ export default function SobrePage() {
                     Copie e Cole os dados do CONREAJ
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    No SIBE, copie a tabela do CONREAJ, vá para a tela do B94
-                    Easy e cole o texto normalmente no campo indicado. O sistema
+                    No SIBE, copie a tabela do CONREAJ, vá para a tela do
+                    B94+ e cole o texto normalmente no campo indicado. O sistema
                     filtrará os dados automaticamente.
                   </p>
                 </div>
@@ -66,7 +66,7 @@ export default function SobrePage() {
                     Adicione o PDF
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Clique no botão “Adicionar PDF”. O sistema aceita os dois
+                    Clique no botão "Adicionar PDF". O sistema aceita os dois
                     formatos: Reconhecimento Inicial, com CNIS e PRISMA, e
                     Revisão, com uma única coluna de valores.
                   </p>
@@ -84,10 +84,10 @@ export default function SobrePage() {
                     Aplique e copie
                   </h2>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Clique em “Aplicar B94 Easy”. Os resultados serão agrupados
+                    Clique em "Aplicar B94+". Os resultados serão agrupados
                     por ano e mês. O sistema comparará os valores do PDF com os
-                    do CONREAJ e exibirá os resultados. Clique em “Copiar
-                    Valores” para copiar os dados e colá-los no PRISMA.
+                    do CONREAJ e exibirá os resultados. Clique em "Copiar
+                    Valores" para copiar os dados e colá-los no PRISMA.
                   </p>
                 </div>
               </div>
@@ -111,7 +111,7 @@ export default function SobrePage() {
                     <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                     <p>
                       Importante: não use Ctrl+V. No campo do PRISMA, clique com
-                      o botão direito do mouse e selecione “Colar original”.
+                      o botão direito do mouse e selecione "Colar original".
                     </p>
                   </div>
                 </div>

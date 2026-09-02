@@ -2,7 +2,7 @@ import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
-const buttonVariants = cva(
+const variantesBotao = cva(
   "inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
@@ -23,17 +23,17 @@ const buttonVariants = cva(
   },
 );
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  VariantProps<typeof buttonVariants>;
+export type PropsBotao = ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof variantesBotao>;
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Botao = forwardRef<HTMLButtonElement, PropsBotao>(
   ({ className, variant, size, ...props }, ref) => (
     <button
       ref={ref}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={cn(variantesBotao({ variant, size }), className)}
       {...props}
     />
   ),
 );
 
-Button.displayName = "Button";
+Botao.displayName = "Botao";

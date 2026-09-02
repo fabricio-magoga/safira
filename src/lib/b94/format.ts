@@ -1,21 +1,21 @@
-import type { CellValue } from "./types";
+import type { ValorCelula } from "./types";
 
-export function formatCopyValue(value: CellValue): string | null {
-  if (typeof value === "number") {
-    if (value === 0) return null;
-    return value.toFixed(2);
+export function formatarCopia(valor: ValorCelula): string | null {
+  if (typeof valor === "number") {
+    if (valor === 0) return null;
+    return valor.toFixed(2);
   }
 
-  const normalized = value.trim();
-  if (!normalized) return null;
+  const normalizado = valor.trim();
+  if (!normalizado) return null;
 
-  return normalized;
+  return normalizado;
 }
 
-export function formatDisplayValue(value: CellValue): string {
-  if (typeof value === "number") {
-    return value === 0 ? "-" : value.toFixed(2);
+export function formatarExibicao(valor: ValorCelula): string {
+  if (typeof valor === "number") {
+    return valor === 0 ? "-" : valor.toFixed(2);
   }
 
-  return value.trim() || "-";
+  return valor.trim() || "-";
 }

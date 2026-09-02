@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export function Cartao({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
@@ -13,7 +13,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   );
 }
 
-export function CardHeader({
+export function CartaoCabecalho({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
@@ -22,7 +22,7 @@ export function CardHeader({
   );
 }
 
-export function CardTitle({
+export function CartaoTitulo({
   className,
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
@@ -37,7 +37,7 @@ export function CardTitle({
   );
 }
 
-export function CardContent({
+export function CartaoConteudo({
   className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) {

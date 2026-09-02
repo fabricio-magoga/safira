@@ -1,6 +1,6 @@
-import type { B94Block, CellValue, ConreajIndex } from "./types";
+import type { BlocoB94, ValorCelula, IndiceConreaj } from "./types";
 
-export const MONTHS = [
+export const MESES = [
   "JAN",
   "FEV",
   "MAR",
@@ -15,122 +15,122 @@ export const MONTHS = [
   "DEZ",
 ] as const;
 
-const YEAR_PATTERN = /\b(?:19|20)\d{2}\b/g;
-const MONTH_LINE =
+const PADRAO_ANO = /\b(?:19|20)\d{2}\b/g;
+const LINHA_MES =
   /^\s*(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\b(.*)$/i;
-const MONEY = /\d[\d.]*,\d{1,2}/g;
+const DINHEIRO = /\d[\d.]*,\d{1,2}/g;
 
-function cellsFromTable(line: string): string[] {
-  const separator = line.includes("!") ? "!" : line.includes("|") ? "|" : null;
-  if (!separator) return [];
+function celulasDaTabela(linha: string): string[] {
+  const separador = linha.includes("!") ? "!" : linha.includes("|") ? "|" : null;
+  if (!separador) return [];
 
-  return line
-    .split(separator)
-    .map((cell) => cell.trim())
+  return linha
+    .split(separador)
+    .map((cel) => cel.trim())
     .filter(Boolean);
 }
 
-function pdfPrismaHasContribution(cell: string): boolean {
-  const values = cell.match(MONEY) ?? [];
-  const prismaValue = values.at(-1);
-  if (!prismaValue) return false;
+function prismaTemContrib(celula: string): boolean {
+  const valores = celula.match(DINHEIRO) ?? [];
+  const valorPrisma = valores.at(-1);
+  if (!valorPrisma) return false;
 
-  const normalizedValue = prismaValue.replace(/\./g, "").replace(",", ".");
-  return Number(normalizedValue) > 0;
+  const normalizado = valorPrisma.replace(/\./g, "").replace(",", ".");
+  return Number(normalizado) > 0;
 }
 
-function monthCells(line: string): { month: string; cells: string[] } | null {
-  const tableCells = cellsFromTable(line);
-  if (tableCells.length) {
-    const month = tableCells[0].toUpperCase().replace(/[.:;]+$/, "");
-    if ((MONTHS as readonly string[]).includes(month)) {
-      return { month, cells: tableCells.slice(1) };
+function celulasMes(linha: string): { mes: string; celulas: string[] } | null {
+  const celulasTab = celulasDaTabela(linha);
+  if (celulasTab.length) {
+    const mes = celulasTab[0].toUpperCase().replace(/[.:;]+$/, "");
+    if ((MESES as readonly string[]).includes(mes)) {
+      return { mes, celulas: celulasTab.slice(1) };
     }
   }
 
-  const match = line.match(MONTH_LINE);
+  const match = linha.match(LINHA_MES);
   if (!match) return null;
 
   const tokens = match[2].trim().split(/\s+/).filter(Boolean);
-  const cells: string[] = [];
-  for (let index = 0; index < tokens.length; index += 2) {
-    cells.push(tokens.slice(index, index + 2).join(" "));
+  const celulas: string[] = [];
+  for (let i = 0; i < tokens.length; i += 2) {
+    celulas.push(tokens.slice(i, i + 2).join(" "));
   }
 
-  return { month: match[1].toUpperCase(), cells };
+  return { mes: match[1].toUpperCase(), celulas };
 }
 
-export function extractB94Matrices(
-  pageLines: string[][],
-  conreajData: ConreajIndex,
-): B94Block[] {
-  const matrix: Record<string, Record<number, CellValue>> = Object.fromEntries(
-    MONTHS.map((month) => [month, {}]),
+export function extrairMatrizes(
+  linhasPagina: string[][],
+  dadosConreaj: IndiceConreaj,
+): BlocoB94[] {
+  const matriz: Record<string, Record<number, ValorCelula>> = Object.fromEntries(
+    MESES.map((mes) => [mes, {}]),
   );
-  const yearsFound = new Set<number>();
+  const anosEncontrados = new Set<number>();
 
-  for (const lines of pageLines) {
-    let currentYears: number[] = [];
+  for (const linhas of linhasPagina) {
+    let anosAtuais: number[] = [];
 
-    for (const rawLine of lines) {
-      const line = rawLine.trim();
-      const tableCells = cellsFromTable(line);
-      const headerCell = tableCells[0]?.replace(/\\/g, "/").toUpperCase();
+    for (const linhaOriginal of linhas) {
+      const linha = linhaOriginal.trim();
+      const celulasTab = celulasDaTabela(linha);
+      const celulaCab = celulasTab[0]?.replace(/\\/g, "/").toUpperCase();
 
       if (
-        (headerCell === "M/A" && tableCells.length > 0) ||
-        /^M[\\/]A\b/i.test(line)
+        (celulaCab === "M/A" && celulasTab.length > 0) ||
+        /^M[\\/]A\b/i.test(linha)
       ) {
-        const years = [...rawLine.matchAll(new RegExp(YEAR_PATTERN))].map(
-          (match) => Number(match[0]),
+        const anos = [...linhaOriginal.matchAll(new RegExp(PADRAO_ANO))].map(
+          (m) => Number(m[0]),
         );
-        currentYears = years;
-        years.forEach((year) => yearsFound.add(year));
+        anosAtuais = anos;
+        anos.forEach((ano) => anosEncontrados.add(ano));
         continue;
       }
 
-      const monthData = monthCells(line);
-      if (!monthData || !currentYears.length) continue;
+      const dadosMes = celulasMes(linha);
+      if (!dadosMes || !anosAtuais.length) continue;
 
-      for (let index = 0; index < currentYears.length; index += 1) {
-        const year = currentYears[index];
-        const cell = monthData.cells[index] ?? "";
-        if (pdfPrismaHasContribution(cell)) {
-          matrix[monthData.month][year] =
-            conreajData.get(year) ?? `CONREAJ ${year}`;
-        } else if (!(year in matrix[monthData.month])) {
-          matrix[monthData.month][year] = 0;
+      for (let i = 0; i < anosAtuais.length; i += 1) {
+        const ano = anosAtuais[i];
+        const celula = dadosMes.celulas[i] ?? "";
+        if (prismaTemContrib(celula)) {
+          matriz[dadosMes.mes][ano] =
+            dadosConreaj.get(ano) ?? `CONREAJ ${ano}`;
+        } else if (!(ano in matriz[dadosMes.mes])) {
+          matriz[dadosMes.mes][ano] = 0;
         }
       }
     }
   }
 
-  const conreajStartYear = conreajData.keys().next().value as
+  const anoInicioConreaj = dadosConreaj.keys().next().value as
     | number
     | undefined;
-  const years = [...yearsFound]
+  const anos = [...anosEncontrados]
     .filter(
-      (year) =>
-        conreajData.has(year) &&
-        conreajStartYear !== undefined &&
-        year >= conreajStartYear,
+      (ano) =>
+        dadosConreaj.has(ano) &&
+        anoInicioConreaj !== undefined &&
+        ano >= anoInicioConreaj,
     )
     .sort((a, b) => a - b);
 
-  const blocks: B94Block[] = [];
-  for (let index = 0; index < years.length; index += 5) {
-    const chunk = years.slice(index, index + 5);
-    blocks.push({
-      period: `${chunk[0]}-${chunk.at(-1)}`,
-      columns: chunk,
-      rows: Object.fromEntries(
-        MONTHS.map((month) => [
-          month,
-          chunk.map((year) => matrix[month][year] ?? 0),
+  const blocos: BlocoB94[] = [];
+  for (let i = 0; i < anos.length; i += 5) {
+    const grupo = anos.slice(i, i + 5);
+    blocos.push({
+      periodo: `${grupo[0]}-${grupo.at(-1)}`,
+      colunas: grupo,
+      linhas: Object.fromEntries(
+        MESES.map((mes) => [
+          mes,
+          grupo.map((ano) => matriz[mes][ano] ?? 0),
         ]),
       ),
     });
   }
 
-  return blocks;
+  return blocos;
 }

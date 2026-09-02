@@ -1,20 +1,20 @@
 import { create } from "zustand";
-import type { B94Block } from "@/lib/b94/types";
+import type { BlocoB94 } from "@/lib/b94/types";
 
-export type { B94Block };
+export type { BlocoB94 };
 
-type B94State = {
-  conreajText: string;
-  setConreajText: (text: string) => void;
-  blocks: B94Block[];
-  setBlocks: (blocks: B94Block[]) => void;
-  reset: () => void;
+type EstadoB94 = {
+  textoConreaj: string;
+  defTextoConreaj: (texto: string) => void;
+  blocos: BlocoB94[];
+  defBlocos: (blocos: BlocoB94[]) => void;
+  resetar: () => void;
 };
 
-export const useB94Store = create<B94State>((set) => ({
-  conreajText: "",
-  setConreajText: (conreajText) => set({ conreajText }),
-  blocks: [],
-  setBlocks: (blocks) => set({ blocks }),
-  reset: () => set({ conreajText: "", blocks: [] }),
+export const usarStoreB94 = create<EstadoB94>((set) => ({
+  textoConreaj: "",
+  defTextoConreaj: (textoConreaj) => set({ textoConreaj }),
+  blocos: [],
+  defBlocos: (blocos) => set({ blocos }),
+  resetar: () => set({ textoConreaj: "", blocos: [] }),
 }));

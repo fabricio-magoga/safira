@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ProvedorTema } from "@/components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   description: "SAFIRA — ferramentas previdenciárias em TypeScript",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function LayoutRaiz({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
@@ -39,8 +39,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           }}
         />
       </head>
-      <body className="min-h-full">
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="min-h-full" suppressHydrationWarning>
+        <ProvedorTema>{children}</ProvedorTema>
       </body>
     </html>
   );

@@ -1,29 +1,29 @@
 "use client";
 
-import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+import * as DicaPrimitiva from "@radix-ui/react-tooltip";
 import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/cn";
 
-export function TooltipProvider({
+export function DicaProvedor({
   delayDuration = 300,
   ...props
-}: ComponentPropsWithoutRef<typeof TooltipPrimitive.Provider>) {
+}: ComponentPropsWithoutRef<typeof DicaPrimitiva.Provider>) {
   return (
-    <TooltipPrimitive.Provider delayDuration={delayDuration} {...props} />
+    <DicaPrimitiva.Provider delayDuration={delayDuration} {...props} />
   );
 }
 
-export const Tooltip = TooltipPrimitive.Root;
-export const TooltipTrigger = TooltipPrimitive.Trigger;
+export const Dica = DicaPrimitiva.Root;
+export const DicaGatilho = DicaPrimitiva.Trigger;
 
-export function TooltipContent({
+export function DicaConteudo({
   className,
   sideOffset = 6,
   ...props
-}: ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>) {
+}: ComponentPropsWithoutRef<typeof DicaPrimitiva.Content>) {
   return (
-    <TooltipPrimitive.Portal>
-      <TooltipPrimitive.Content
+    <DicaPrimitiva.Portal>
+      <DicaPrimitiva.Content
         sideOffset={sideOffset}
         className={cn(
           "z-50 overflow-hidden rounded-md bg-foreground px-3 py-1.5 text-xs text-background shadow-md",
@@ -31,6 +31,6 @@ export function TooltipContent({
         )}
         {...props}
       />
-    </TooltipPrimitive.Portal>
+    </DicaPrimitiva.Portal>
   );
 }

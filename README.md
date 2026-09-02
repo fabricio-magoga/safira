@@ -20,7 +20,7 @@ pnpm dev
 ```
 
 - App: http://localhost:3000
-- B94 Easy: http://localhost:3000/b94easy
+- B94+: http://localhost:3000/b94+
 - Saúde da API: http://localhost:3000/api/health
 
 ## Estrutura

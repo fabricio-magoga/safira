@@ -9,58 +9,58 @@ import {
   type ReactNode,
 } from "react";
 
-type Theme = "light" | "dark";
+type Tema = "light" | "dark";
 
-type ThemeContextValue = {
-  resolvedTheme: Theme;
-  mounted: boolean;
-  setTheme: (theme: Theme) => void;
+type ValorContextoTema = {
+  temaResolvido: Tema;
+  montado: boolean;
+  defTema: (tema: Tema) => void;
 };
 
-const ThemeContext = createContext<ThemeContextValue>({
-  resolvedTheme: "light",
-  mounted: false,
-  setTheme: () => {},
+const ContextoTema = createContext<ValorContextoTema>({
+  temaResolvido: "light",
+  montado: false,
+  defTema: () => {},
 });
 
-const subscribeToMount = () => () => {};
-const getMounted = () => true;
-const getServerMounted = () => false;
+const inscreverMontagem = () => () => {};
+const obterMontado = () => true;
+const obterMontadoServidor = () => false;
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => {
+export function ProvedorTema({ children }: { children: ReactNode }) {
+  const [tema, defEstadoTema] = useState<Tema>(() => {
     if (typeof window === "undefined") {
       return "light";
     }
 
     return window.localStorage.getItem("theme") === "dark" ? "dark" : "light";
   });
-  const mounted = useSyncExternalStore(
-    subscribeToMount,
-    getMounted,
-    getServerMounted,
+  const montado = useSyncExternalStore(
+    inscreverMontagem,
+    obterMontado,
+    obterMontadoServidor,
   );
 
   useEffect(() => {
-    const root = document.documentElement;
+    const raiz = document.documentElement;
 
-    root.classList.remove("light", "dark");
-    root.classList.add(theme);
-    root.style.colorScheme = theme;
-    window.localStorage.setItem("theme", theme);
-  }, [theme]);
+    raiz.classList.remove("light", "dark");
+    raiz.classList.add(tema);
+    raiz.style.colorScheme = tema;
+    window.localStorage.setItem("theme", tema);
+  }, [tema]);
 
-  const setTheme = (nextTheme: Theme) => {
-    setThemeState(nextTheme);
+  const defTema = (proximoTema: Tema) => {
+    defEstadoTema(proximoTema);
   };
 
   return (
-    <ThemeContext.Provider value={{ resolvedTheme: theme, mounted, setTheme }}>
+    <ContextoTema.Provider value={{ temaResolvido: tema, montado, defTema }}>
       {children}
-    </ThemeContext.Provider>
+    </ContextoTema.Provider>
   );
 }
 
-export function useTheme() {
-  return useContext(ThemeContext);
+export function usarTema() {
+  return useContext(ContextoTema);
 }
