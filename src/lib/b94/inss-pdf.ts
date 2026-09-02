@@ -16,7 +16,8 @@ export const MONTHS = [
 ] as const;
 
 const YEAR_PATTERN = /\b(?:19|20)\d{2}\b/g;
-const MONTH_LINE = /^\s*(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\b(.*)$/i;
+const MONTH_LINE =
+  /^\s*(JAN|FEV|MAR|ABR|MAI|JUN|JUL|AGO|SET|OUT|NOV|DEZ)\b(.*)$/i;
 const MONEY = /\d[\d.]*,\d{1,2}/g;
 
 function cellsFromTable(line: string): string[] {
@@ -104,7 +105,9 @@ export function extractB94Matrices(
     }
   }
 
-  const conreajStartYear = conreajData.keys().next().value as number | undefined;
+  const conreajStartYear = conreajData.keys().next().value as
+    | number
+    | undefined;
   const years = [...yearsFound]
     .filter(
       (year) =>
