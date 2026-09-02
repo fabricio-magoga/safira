@@ -10,19 +10,29 @@ export function parseConreajText(rawText: string): Map<number, number> {
     if (!dateMatch) continue;
 
     const cells = line.split("\t").map((cell) => cell.trim());
+    const year = Number(dateMatch[1]);
+    const rest = line.slice(dateMatch[0].length);
+    const values = [...rest.matchAll(VALUE_PATTERN)].map((match) => match[0]);
     let correctedValue: string;
+    let previousValue: string;
 
     if (cells.length >= 5) {
+      previousValue = cells[1] ?? "";
       correctedValue = cells[4] ?? "";
     } else {
-      const rest = line.slice(dateMatch[0].length);
-      const values = [...rest.matchAll(VALUE_PATTERN)].map((match) => match[0]);
+      previousValue = values[0] ?? "";
       correctedValue = values.at(-1) ?? "";
+    }
+
+    if (VALUE_FULL.test(previousValue)) {
+      const cleanPreviousValue = previousValue
+        .replace(/\./g, "")
+        .replace(",", ".");
+      data.set(year - 1, Number(cleanPreviousValue));
     }
 
     if (!VALUE_FULL.test(correctedValue)) continue;
 
-    const year = Number(dateMatch[1]);
     const cleanValue = correctedValue.replace(/\./g, "").replace(",", ".");
     data.set(year, Number(cleanValue));
   }
@@ -32,5 +42,5 @@ export function parseConreajText(rawText: string): Map<number, number> {
 
 export function getFirstConreajYear(text: string): number | null {
   const match = text.match(/^\s*\d{2}\/((?:19|20)\d{2})\b/m);
-  return match ? Number(match[1]) : null;
+  return match ? Number(match[1]) - 1 : null;
 }

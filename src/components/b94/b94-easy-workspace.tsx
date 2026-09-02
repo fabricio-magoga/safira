@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { AlertCircle, Check, Clipboard, FileUp, RotateCcw } from "lucide-react";
+import {
+  AlertCircle,
+  Check,
+  Clipboard,
+  ExternalLink,
+  FileUp,
+  RotateCcw,
+} from "lucide-react";
 import { AppHeader } from "@/components/app-header";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -197,9 +204,15 @@ export function B94EasyWorkspace() {
           {!blocks.length ? (
             <section className="mx-auto max-w-4xl">
               <div className="mb-12 max-w-xl">
-                <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
-                  workspace
-                </p>
+                <a
+                  href="https://sibe.inss.gov.br/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mb-5 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground hover:text-foreground"
+                >
+                  acessar sibe
+                  <ExternalLink className="size-3" aria-hidden="true" />
+                </a>
                 <h1 className="text-4xl font-black tracking-[-0.08em] sm:text-6xl">
                   <B94Wordmark className="text-4xl sm:text-6xl" />
                 </h1>
@@ -276,7 +289,7 @@ export function B94EasyWorkspace() {
               <div className="mb-10 flex items-end justify-between gap-6">
                 <div>
                   <p className="mb-3 font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
-                    b94 / output
+                    b94 / resultados
                   </p>
                   <h1 className="flex flex-wrap items-baseline gap-x-3 text-4xl font-black tracking-[-0.08em] sm:text-6xl">
                     <B94Wordmark className="text-4xl sm:text-6xl" />
