@@ -147,7 +147,7 @@ export default function PaginaSobre() {
                 </div>
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">
                   Envie uma mensagem informando o que aconteceu e, se possível,
-                  anexe o PDF e uma imagem da tela.
+                  as infomações inseridas com uma imagem da tela.
                 </p>
                 <LinkContato
                   href={`mailto:${EMAIL_CONTATO}?subject=Relato%20de%20erro%20no%20SAFIRA`}
@@ -168,10 +168,6 @@ export default function PaginaSobre() {
                 <p className="mt-2 text-sm text-muted-foreground">
                   Desenvolvimento e manutenção do SAFIRA.
                 </p>
-                <LinkContato href={`mailto:${EMAIL_CONTATO}`} className="mt-5">
-                  {EMAIL_CONTATO}
-                  <Mail className="size-4" />
-                </LinkContato>
                 <LinkContato
                   href="https://fabriciomagoga.com.br"
                   externo
