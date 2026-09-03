@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AlertTriangle, ArrowLeft, ExternalLink, Mail } from "lucide-react";
 import { Cabecalho } from "@/components/app-header";
-import { SafiraLogotipo } from "@/components/brand";
+import { B94Logotipo, SafiraLogotipo } from "@/components/brand";
 
 export const metadata = {
   title: "Sobre | SAFIRA",
@@ -26,12 +26,26 @@ export default function PaginaSobre() {
 
           <div className="mb-12 max-w-2xl">
             <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
-              guia rápido
+              sobre
             </p>
             <h1 className="text-4xl font-black tracking-[-0.08em] sm:text-6xl">
               <SafiraLogotipo className="text-4xl sm:text-6xl" />
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
+              Sistema de Análise Facilitada de Informações e Requerimentos
+              Assistenciais. O SAFIRA reúne módulos especializados para
+              agilizar tarefas do dia a dia da análise de benefícios.
+            </p>
+          </div>
+
+          <div className="mb-12 max-w-2xl">
+            <p className="mb-5 flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+              guia rápido
+            </p>
+            <h2 className="text-2xl font-black tracking-[-0.05em] sm:text-3xl">
+              Como usar o <B94Logotipo className="inline text-2xl sm:text-3xl" />
+            </h2>
+            <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
               Organize os dados do CONREAJ e extraia os valores PRISMA do PDF em
               poucos passos.
             </p>
@@ -155,6 +169,15 @@ export default function PaginaSobre() {
                 >
                   contato@fabriciomagoga.com.br
                   <Mail className="size-4" />
+                </a>
+                <a
+                  href="https://fabriciomagoga.com.br"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                >
+                  fabriciomagoga.com.br
+                  <ExternalLink className="size-4" />
                 </a>
               </article>
             </div>
