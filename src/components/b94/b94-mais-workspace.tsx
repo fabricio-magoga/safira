@@ -39,7 +39,7 @@ import { MESES } from "@/lib/b94/inss-pdf";
 import type { ValorCelula } from "@/lib/b94/types";
 import { usarStoreB94, type BlocoB94 } from "@/store/b94-store";
 
-export function B94EasyAreaTrabalho() {
+export function B94MaisAreaTrabalho() {
   const { textoConreaj, defTextoConreaj, blocos, defBlocos, resetar } =
     usarStoreB94();
   const [arquivo, defArquivo] = useState<File | null>(null);

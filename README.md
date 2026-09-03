@@ -157,7 +157,7 @@ safira/
 │   │   │   ├── textarea.tsx
 │   │   │   └── tooltip.tsx
 │   │   ├── b94/                    # Componentes do módulo B94+
-│   │   │   └── b94-easy-workspace.tsx
+│   │   │   └── b94-mais-workspace.tsx
 │   │   ├── app-header.tsx          # Cabeçalho global
 │   │   ├── brand.tsx               # Identidade visual (logotipos e links)
 │   │   ├── page-shell.tsx          # Casca padrão de página (fundo, cabeçalho, container)
