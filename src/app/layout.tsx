@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SAFIRA",
-  description: "SAFIRA — ferramentas previdenciárias em TypeScript",
+  description: "SAFIRA — ferramentas previdenciárias",
 };
 
 export default function LayoutRaiz({ children }: LayoutProps<"/">) {

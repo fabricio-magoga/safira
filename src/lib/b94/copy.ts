@@ -4,11 +4,16 @@ import { formatarCopia } from "./format";
 export async function copiarBloco(
   linhas: Record<string, ValorCelula[]>,
   colunas: number[],
+  ehExtremidade: (ano: number, mes: string) => boolean,
 ): Promise<void> {
   const itens: string[] = [];
 
-  colunas.forEach((_, indice) => {
-    Object.values(linhas).forEach((valores) => {
+  colunas.forEach((ano, indice) => {
+    Object.entries(linhas).forEach(([mes, valores]) => {
+      if (ehExtremidade(ano, mes)) {
+        return;
+      }
+
       const valor = valores[indice];
       if (valor === undefined || valor === null) {
         return;

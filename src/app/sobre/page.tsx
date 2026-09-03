@@ -51,7 +51,9 @@ function PassoGuia({ numero, passo }: { numero: number; passo: Passo }) {
           {String(numero).padStart(2, "0")}
         </span>
         <div>
-          <h2 className="text-lg font-bold tracking-[-0.03em]">{passo.titulo}</h2>
+          <h2 className="text-lg font-bold tracking-[-0.03em]">
+            {passo.titulo}
+          </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
             {passo.descricao}
           </p>
@@ -111,8 +113,8 @@ export default function PaginaSobre() {
             </h1>
             <p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground">
               Sistema de Análise Facilitada de Informações e Requerimentos
-              Assistenciais. O SAFIRA reúne módulos especializados para
-              agilizar tarefas do dia a dia da análise de benefícios.
+              Assistenciais. O SAFIRA reúne módulos especializados para agilizar
+              tarefas do dia a dia da análise de benefícios.
             </p>
           </div>
 
@@ -121,7 +123,8 @@ export default function PaginaSobre() {
               guia rápido
             </p>
             <h2 className="text-2xl font-black tracking-[-0.05em] sm:text-3xl">
-              Como usar o <B94Logotipo className="inline text-2xl sm:text-3xl" />
+              Como usar o{" "}
+              <B94Logotipo className="inline text-2xl sm:text-3xl" />
             </h2>
             <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
               Organize os dados do CONREAJ e extraia os valores PRISMA do PDF em

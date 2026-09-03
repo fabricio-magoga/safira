@@ -33,8 +33,10 @@ import {
 } from "@/components/ui/tooltip";
 import { montarBlocos } from "@/lib/b94/blocos";
 import { copiarBloco } from "@/lib/b94/copy";
-import { obterPrimeiroAnoConreaj } from "@/lib/b94/conreaj";
+import { NUMERO_MES, obterDataInicioConreaj, obterEspecieConreaj, obterNomeConreaj, obterPrimeiroAnoConreaj } from "@/lib/b94/conreaj";
 import { formatarExibicao } from "@/lib/b94/format";
+import { MESES } from "@/lib/b94/inss-pdf";
+import type { ValorCelula } from "@/lib/b94/types";
 import { usarStoreB94, type BlocoB94 } from "@/store/b94-store";
 
 export function B94EasyAreaTrabalho() {
@@ -82,7 +84,9 @@ export function B94EasyAreaTrabalho() {
         defTipoAlerta("warning");
         throw new Error("Nenhuma matriz foi encontrada no PDF.");
       }
-      const anoInicio = obterPrimeiroAnoConreaj(textoConreaj);
+      const dataInicio = obterDataInicioConreaj(textoConreaj);
+      const anoInicio = dataInicio?.ano ?? obterPrimeiroAnoConreaj(textoConreaj);
+      const mesInicio = dataInicio?.mes ?? 1;
       const blocosFiltrados =
         anoInicio === null
           ? dados.blocks
@@ -97,7 +101,16 @@ export function B94EasyAreaTrabalho() {
                   linhas: Object.fromEntries(
                     Object.entries(bloco.linhas).map(([mes, valores]) => [
                       mes,
-                      indices.map((idx) => valores[idx] ?? 0),
+                      indices.map((idx) => {
+                        const ano = bloco.colunas[idx];
+                        if (
+                          ano === anoInicio &&
+                          (NUMERO_MES[mes] ?? 0) < mesInicio
+                        ) {
+                          return 0;
+                        }
+                        return valores[idx] ?? 0;
+                      }),
                     ]),
                   ),
                 };
@@ -123,7 +136,7 @@ export function B94EasyAreaTrabalho() {
 
   const copiar = async (bloco: BlocoB94) => {
     try {
-      await copiarBloco(bloco.linhas, bloco.colunas);
+      await copiarBloco(bloco.linhas, bloco.colunas, ehExtremidade);
       defPeriodoCopiado(bloco.periodo);
       window.setTimeout(() => defPeriodoCopiado(null), 2500);
     } catch (erroCopia) {
@@ -152,6 +165,35 @@ export function B94EasyAreaTrabalho() {
   });
 
   const anos = [...valoresPorAno.keys()].sort((a, b) => b - a);
+
+  const extremidades = new Set<string>();
+  if (anos.length) {
+    const ordem: { ano: number; mes: string; valor: ValorCelula }[] = [];
+    for (const ano of anos) {
+      for (const mes of [...MESES].reverse()) {
+        ordem.push({ ano, mes, valor: valoresPorAno.get(ano)?.[mes] ?? 0 });
+      }
+    }
+    const ehValor = (v: ValorCelula) =>
+      typeof v === "number" ? v !== 0 : v.trim() !== "";
+    const primeiro = ordem.findIndex((c) => ehValor(c.valor));
+    const ultimo =
+      ordem.length - 1 - [...ordem].reverse().findIndex((c) => ehValor(c.valor));
+    if (primeiro !== -1) {
+      ordem.forEach((c, i) => {
+        if (i < primeiro || i > ultimo) {
+          extremidades.add(`${c.ano}|${c.mes}`);
+        }
+      });
+    }
+  }
+  const ehExtremidade = (ano: number, mes: string) =>
+    extremidades.has(`${ano}|${mes}`);
+
+  const nomeBeneficiario = obterNomeConreaj(textoConreaj);
+  const especieBeneficiario = obterEspecieConreaj(textoConreaj);
+  const dataInicioBeneficio = obterDataInicioConreaj(textoConreaj);
+
   const mesesExibicao = Object.keys(blocos[0]?.linhas ?? {}).reverse();
   const blocosExibicao = montarBlocos(
     anos,
@@ -207,7 +249,7 @@ export function B94EasyAreaTrabalho() {
                   <AreaTexto
                     id="conreaj-text"
                     aria-label="Dados do CONREAJ"
-                    placeholder="Copie e cole a tabela do CONREAJ aqui"
+                    placeholder="Copie e cole a tela do CONREAJ aqui"
                     className="min-h-[375px] resize-none border-0 bg-transparent p-5 text-sm shadow-none focus-visible:ring-0 placeholder:text-muted-foreground/60 sm:min-h-[178px]"
                     value={textoConreaj}
                     onChange={(evento) => {
@@ -299,6 +341,42 @@ export function B94EasyAreaTrabalho() {
                   </Dica>
                 </div>
               </div>
+              {(nomeBeneficiario || especieBeneficiario || dataInicioBeneficio) && (
+                <div className="mb-8 grid gap-3 sm:grid-cols-3">
+                  {nomeBeneficiario && (
+                    <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3">
+                      <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        Nome
+                      </p>
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {nomeBeneficiario}
+                      </p>
+                    </div>
+                  )}
+                  {especieBeneficiario && (
+                    <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3">
+                      <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        Espécie
+                      </p>
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {especieBeneficiario}
+                      </p>
+                    </div>
+                  )}
+                  {dataInicioBeneficio && (
+                    <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3">
+                      <p className="mb-1 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        Início do benefício
+                      </p>
+                      <p className="text-sm font-medium text-foreground">
+                        {String(dataInicioBeneficio.dia).padStart(2, "0")}/
+                        {String(dataInicioBeneficio.mes).padStart(2, "0")}/
+                        {dataInicioBeneficio.ano}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="space-y-10">
                 {blocosExibicao.map((bloco) => {
                   const copiado = periodoCopiado === bloco.periodo;
@@ -357,14 +435,18 @@ export function B94EasyAreaTrabalho() {
                               <TabelaCelulaCab className="font-mono text-xs font-medium text-muted-foreground">
                                 {mes}
                               </TabelaCelulaCab>
-                              {valores.map((valor, idx) => (
-                                <TabelaCelula
-                                  key={`${mes}-${idx}`}
-                                  className={`text-right font-mono text-xs ${typeof valor === "string" ? "text-[#b36d00] dark:text-[#ffba4d]" : ""}`}
-                                >
-                                  {formatarExibicao(valor)}
-                                </TabelaCelula>
-                              ))}
+                              {valores.map((valor, idx) => {
+                                const ano = bloco.colunas[idx];
+                                const ehExt = ehExtremidade(ano, mes);
+                                return (
+                                  <TabelaCelula
+                                    key={`${mes}-${idx}`}
+                                    className={`text-right font-mono text-xs ${typeof valor === "string" ? "text-[#b36d00] dark:text-[#ffba4d]" : ""}`}
+                                  >
+                                    {ehExt ? "-" : formatarExibicao(valor)}
+                                  </TabelaCelula>
+                                );
+                              })}
                             </TabelaLinha>
                           ))}
                         </TabelaCorpo>

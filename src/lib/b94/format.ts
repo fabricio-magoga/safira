@@ -2,8 +2,7 @@ import type { ValorCelula } from "./types";
 
 export function formatarCopia(valor: ValorCelula): string | null {
   if (typeof valor === "number") {
-    if (valor === 0) return null;
-    return valor.toFixed(2);
+    return valor === 0 ? "0" : valor.toFixed(2);
   }
 
   const normalizado = valor.trim();
@@ -14,8 +13,8 @@ export function formatarCopia(valor: ValorCelula): string | null {
 
 export function formatarExibicao(valor: ValorCelula): string {
   if (typeof valor === "number") {
-    return valor === 0 ? "-" : valor.toFixed(2);
+    return valor === 0 ? "0" : valor.toFixed(2);
   }
 
-  return valor.trim() || "-";
+  return valor.trim() || "0";
 }
