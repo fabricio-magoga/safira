@@ -20,9 +20,9 @@ type Passo = {
 
 const PASSOS: Passo[] = [
   {
-    titulo: "Copie e Cole os dados do CONREAJ",
+    titulo: "Copie e Cole a tela do CONREAJ",
     descricao:
-      "No SIBE, copie a tabela do CONREAJ, vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema filtrará os dados automaticamente.",
+      "No SIBE, abra o relatório do CONREAJ e pressione Ctrl+A para selecionar a tela inteira, depois Ctrl+C para copiar. Vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema extrairá automaticamente os dados do beneficiário e os índices de reajuste.",
   },
   {
     titulo: "Adicione o PDF",

@@ -3,7 +3,7 @@ import { Botao } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 
 export const CLASSE_ICONE_INTERATIVO =
-  "size-5 transition-opacity duration-200 group-hover:opacity-60";
+  "size-5 transition-opacity duration-200 group-hover:opacity-60 hover:pointer";
 
 export const BotaoIcone = forwardRef<
   HTMLButtonElement,
