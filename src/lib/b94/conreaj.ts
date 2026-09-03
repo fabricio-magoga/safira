@@ -1,9 +1,11 @@
+import type { IndiceConreaj } from "./types";
+import { PADRAO_VALOR_BR, converterValorBr } from "./numero";
+
 const PADRAO_DATA = /^\s*\d{2}\/((?:19|20)\d{2})\b/;
 const PADRAO_VALOR = /[\d.]+(?:,\d{1,2})?/g;
-const VALOR_COMPLETO = /^[\d.]+(?:,\d{1,2})?$/;
 
-export function analisarConreaj(textoOriginal: string): Map<number, number> {
-  const dados = new Map<number, number>();
+export function analisarConreaj(textoOriginal: string): IndiceConreaj {
+  const dados: IndiceConreaj = new Map();
 
   for (const linha of textoOriginal.split(/\r?\n/)) {
     const matchData = linha.match(PADRAO_DATA);
@@ -24,23 +26,19 @@ export function analisarConreaj(textoOriginal: string): Map<number, number> {
       valorCorrigido = valores.at(-1) ?? "";
     }
 
-    if (VALOR_COMPLETO.test(valorAnterior)) {
-      const anteriorLimpo = valorAnterior
-        .replace(/\./g, "")
-        .replace(",", ".");
-      dados.set(ano - 1, Number(anteriorLimpo));
+    if (PADRAO_VALOR_BR.test(valorAnterior)) {
+      dados.set(ano - 1, converterValorBr(valorAnterior));
     }
 
-    if (!VALOR_COMPLETO.test(valorCorrigido)) continue;
+    if (!PADRAO_VALOR_BR.test(valorCorrigido)) continue;
 
-    const valorLimpo = valorCorrigido.replace(/\./g, "").replace(",", ".");
-    dados.set(ano, Number(valorLimpo));
+    dados.set(ano, converterValorBr(valorCorrigido));
   }
 
   return dados;
 }
 
 export function obterPrimeiroAnoConreaj(texto: string): number | null {
-  const match = texto.match(/^\s*\d{2}\/((?:19|20)\d{2})\b/m);
+  const match = texto.match(new RegExp(PADRAO_DATA.source, "m"));
   return match ? Number(match[1]) - 1 : null;
 }

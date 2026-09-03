@@ -1,15 +1,14 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { Cabecalho } from "@/components/app-header";
 import { B94Logotipo, SafiraLogotipo } from "@/components/brand";
+import { ConteudoPagina, PaginaBase } from "@/components/page-shell";
+import { CLASSE_CARTAO_DESTAQUE } from "@/components/ui/card";
+import { cn } from "@/lib/cn";
 
 export default function PaginaInicial() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-      <Cabecalho />
-
-      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-72px)] w-full max-w-6xl items-start justify-center px-5 pb-10 pt-8 sm:px-8 sm:pt-14">
+    <PaginaBase>
+      <ConteudoPagina className="flex min-h-[calc(100vh-72px)] items-start justify-center pb-10 pt-8 sm:pt-14">
         <section className="mx-auto mt-6 flex max-w-4xl flex-col items-center text-center">
           <div className="mb-10 max-w-xl">
             <h1>
@@ -24,7 +23,10 @@ export default function PaginaInicial() {
           <div className="w-full max-w-2xl">
             <Link
               href="/b94+"
-              className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-card/90 px-5 py-5 text-left no-underline shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] hover:border-primary/40 hover:bg-card"
+              className={cn(
+                CLASSE_CARTAO_DESTAQUE,
+                "group flex items-center justify-between gap-4 px-5 py-5 text-left no-underline hover:border-primary/40 hover:bg-card",
+              )}
             >
               <div>
                 <B94Logotipo className="text-2xl sm:text-3xl" />
@@ -37,7 +39,7 @@ export default function PaginaInicial() {
             </Link>
           </div>
         </section>
-      </div>
-    </main>
+      </ConteudoPagina>
+    </PaginaBase>
   );
 }

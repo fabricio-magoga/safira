@@ -1,20 +1,98 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { AlertTriangle, ArrowLeft, ExternalLink, Mail } from "lucide-react";
-import { Cabecalho } from "@/components/app-header";
 import { B94Logotipo, SafiraLogotipo } from "@/components/brand";
+import { ConteudoPagina, PaginaBase } from "@/components/page-shell";
+import { CartaoDestaque } from "@/components/ui/card";
 
 export const metadata = {
   title: "Sobre | SAFIRA",
   description: "Sobre o SAFIRA.",
 };
 
+const EMAIL_CONTATO = "contato@fabriciomagoga.com.br";
+
+type Passo = {
+  titulo: string;
+  descricao: string;
+  aviso?: string;
+};
+
+const PASSOS: Passo[] = [
+  {
+    titulo: "Copie e Cole os dados do CONREAJ",
+    descricao:
+      "No SIBE, copie a tabela do CONREAJ, vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema filtrará os dados automaticamente.",
+  },
+  {
+    titulo: "Adicione o PDF",
+    descricao:
+      'Clique no botão "Adicionar PDF". O sistema aceita os dois formatos: Reconhecimento Inicial, com CNIS e PRISMA, e Revisão, com uma única coluna de valores.',
+  },
+  {
+    titulo: "Aplique e copie",
+    descricao:
+      'Clique em "Aplicar B94+". Os resultados serão agrupados por ano e mês. O sistema comparará os valores do PDF com os do CONREAJ e exibirá os resultados. Clique em "Copiar Valores" para copiar os dados e colá-los no PRISMA.',
+  },
+  {
+    titulo: "No PRISMA",
+    descricao:
+      "Cole os valores copiados no PRISMA. O sistema preencherá os campos de acordo com o ano e mês, facilitando a conferência e evitando erros de digitação.",
+    aviso:
+      'Importante: não use Ctrl+V. No campo do PRISMA, clique com o botão direito do mouse e selecione "Colar original".',
+  },
+];
+
+function PassoGuia({ numero, passo }: { numero: number; passo: Passo }) {
+  return (
+    <CartaoDestaque className="sm:p-8">
+      <div className="flex items-start gap-4">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground">
+          {String(numero).padStart(2, "0")}
+        </span>
+        <div>
+          <h2 className="text-lg font-bold tracking-[-0.03em]">{passo.titulo}</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {passo.descricao}
+          </p>
+          {passo.aviso && (
+            <div className="mt-4 flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-3 text-sm leading-5 text-amber-800 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">
+              <AlertTriangle className="mt-0.5 size-4 shrink-0" />
+              <p>{passo.aviso}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </CartaoDestaque>
+  );
+}
+
+function LinkContato({
+  href,
+  children,
+  externo = false,
+  className = "",
+}: {
+  href: string;
+  children: ReactNode;
+  externo?: boolean;
+  className?: string;
+}) {
+  return (
+    <a
+      href={href}
+      {...(externo && { target: "_blank", rel: "noopener noreferrer" })}
+      className={`inline-flex items-center gap-2 text-sm text-primary hover:underline ${className}`.trim()}
+    >
+      {children}
+    </a>
+  );
+}
+
 export default function PaginaSobre() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
-      <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-      <Cabecalho />
-
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
+    <PaginaBase>
+      <ConteudoPagina>
         <section className="mx-auto max-w-3xl">
           <Link
             href="/"
@@ -52,88 +130,12 @@ export default function PaginaSobre() {
           </div>
 
           <div className="space-y-3">
-            <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
-              <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground">
-                  01
-                </span>
-                <div>
-                  <h2 className="text-lg font-bold tracking-[-0.03em]">
-                    Copie e Cole os dados do CONREAJ
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    No SIBE, copie a tabela do CONREAJ, vá para a tela do B94+ e
-                    cole o texto normalmente no campo indicado. O sistema
-                    filtrará os dados automaticamente.
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
-              <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground ">
-                  02
-                </span>
-                <div>
-                  <h2 className="text-lg font-bold tracking-[-0.03em]">
-                    Adicione o PDF
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Clique no botão "Adicionar PDF". O sistema aceita os dois
-                    formatos: Reconhecimento Inicial, com CNIS e PRISMA, e
-                    Revisão, com uma única coluna de valores.
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
-              <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground ">
-                  03
-                </span>
-                <div>
-                  <h2 className="text-lg font-bold tracking-[-0.03em]">
-                    Aplique e copie
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Clique em "Aplicar B94+". Os resultados serão agrupados por
-                    ano e mês. O sistema comparará os valores do PDF com os do
-                    CONREAJ e exibirá os resultados. Clique em "Copiar Valores"
-                    para copiar os dados e colá-los no PRISMA.
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-xl border border-border bg-card/90 p-6 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)] sm:p-8">
-              <div className="flex items-start gap-4">
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent font-mono text-sm font-bold text-primary dark:text-primary-foreground  ">
-                  04
-                </span>
-                <div>
-                  <h2 className="text-lg font-bold tracking-[-0.03em]">
-                    No PRISMA
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
-                    Cole os valores copiados no PRISMA. O sistema preencherá os
-                    campos de acordo com o ano e mês, facilitando a conferência
-                    e evitando erros de digitação.
-                  </p>
-                  <div className="mt-4 flex items-start gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-3 text-sm leading-5 text-amber-800 dark:border-amber-700 dark:bg-amber-950 dark:text-amber-200">
-                    <AlertTriangle className="mt-0.5 size-4 shrink-0" />
-                    <p>
-                      Importante: não use Ctrl+V. No campo do PRISMA, clique com
-                      o botão direito do mouse e selecione "Colar original".
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </article>
+            {PASSOS.map((passo, indice) => (
+              <PassoGuia key={passo.titulo} numero={indice + 1} passo={passo} />
+            ))}
 
             <div className="grid gap-3 pt-6 sm:grid-cols-2">
-              <article className="rounded-xl border border-border bg-card/90 p-6">
+              <CartaoDestaque className="shadow-none">
                 <div className="flex items-center gap-3">
                   <AlertTriangle className="size-5 text-[#b36d00]" />
                   <h2 className="font-bold tracking-[-0.03em]">
@@ -144,16 +146,16 @@ export default function PaginaSobre() {
                   Envie uma mensagem informando o que aconteceu e, se possível,
                   anexe o PDF e uma imagem da tela.
                 </p>
-                <a
-                  href="mailto:contato@fabriciomagoga.com.br?subject=Relato%20de%20erro%20no%20SAFIRA"
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
+                <LinkContato
+                  href={`mailto:${EMAIL_CONTATO}?subject=Relato%20de%20erro%20no%20SAFIRA`}
+                  className="mt-5 font-medium"
                 >
                   <Mail className="size-4" />
                   reportar erro
-                </a>
-              </article>
+                </LinkContato>
+              </CartaoDestaque>
 
-              <article className="rounded-xl border border-border bg-card/90 p-6">
+              <CartaoDestaque className="shadow-none">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   créditos
                 </p>
@@ -163,27 +165,23 @@ export default function PaginaSobre() {
                 <p className="mt-2 text-sm text-muted-foreground">
                   Desenvolvimento e manutenção do SAFIRA.
                 </p>
-                <a
-                  href="mailto:contato@fabriciomagoga.com.br"
-                  className="mt-5 inline-flex items-center gap-2 text-sm text-primary hover:underline"
-                >
-                  contato@fabriciomagoga.com.br
+                <LinkContato href={`mailto:${EMAIL_CONTATO}`} className="mt-5">
+                  {EMAIL_CONTATO}
                   <Mail className="size-4" />
-                </a>
-                <a
+                </LinkContato>
+                <LinkContato
                   href="https://fabriciomagoga.com.br"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-2 inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                  externo
+                  className="mt-2"
                 >
                   fabriciomagoga.com.br
                   <ExternalLink className="size-4" />
-                </a>
-              </article>
+                </LinkContato>
+              </CartaoDestaque>
             </div>
           </div>
         </section>
-      </div>
-    </main>
+      </ConteudoPagina>
+    </PaginaBase>
   );
 }

@@ -1,4 +1,6 @@
 import type { BlocoB94, ValorCelula, IndiceConreaj } from "./types";
+import { montarBlocos } from "./blocos";
+import { converterValorBr } from "./numero";
 
 export const MESES = [
   "JAN",
@@ -35,8 +37,7 @@ function prismaTemContrib(celula: string): boolean {
   const valorPrisma = valores.at(-1);
   if (!valorPrisma) return false;
 
-  const normalizado = valorPrisma.replace(/\./g, "").replace(",", ".");
-  return Number(normalizado) > 0;
+  return converterValorBr(valorPrisma) > 0;
 }
 
 function celulasMes(linha: string): { mes: string; celulas: string[] } | null {
@@ -117,20 +118,5 @@ export function extrairMatrizes(
     )
     .sort((a, b) => a - b);
 
-  const blocos: BlocoB94[] = [];
-  for (let i = 0; i < anos.length; i += 5) {
-    const grupo = anos.slice(i, i + 5);
-    blocos.push({
-      periodo: `${grupo[0]}-${grupo.at(-1)}`,
-      colunas: grupo,
-      linhas: Object.fromEntries(
-        MESES.map((mes) => [
-          mes,
-          grupo.map((ano) => matriz[mes][ano] ?? 0),
-        ]),
-      ),
-    });
-  }
-
-  return blocos;
+  return montarBlocos(anos, MESES, (mes, ano) => matriz[mes][ano] ?? 0);
 }

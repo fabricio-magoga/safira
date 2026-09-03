@@ -13,6 +13,21 @@ export function Cartao({ className, ...props }: HTMLAttributes<HTMLDivElement>) 
   );
 }
 
+export const CLASSE_CARTAO_DESTAQUE =
+  "rounded-xl border border-border bg-card/90 shadow-[0_18px_60px_-32px_rgba(13,74,134,0.42)]";
+
+export function CartaoDestaque({
+  className,
+  ...props
+}: HTMLAttributes<HTMLElement>) {
+  return (
+    <article
+      className={cn(CLASSE_CARTAO_DESTAQUE, "p-6", className)}
+      {...props}
+    />
+  );
+}
+
 export function CartaoCabecalho({
   className,
   ...props

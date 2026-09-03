@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   AlertCircle,
   Check,
@@ -11,8 +10,10 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { Cabecalho } from "@/components/app-header";
+import { ConteudoPagina, PaginaBase } from "@/components/page-shell";
 import { Alerta } from "@/components/ui/alert";
 import { Botao } from "@/components/ui/button";
+import { BotaoIcone, CLASSE_ICONE_INTERATIVO } from "@/components/ui/icon-button";
 import { Cartao, CartaoConteudo, CartaoCabecalho, CartaoTitulo } from "@/components/ui/card";
 import {
   Tabela,
@@ -23,13 +24,14 @@ import {
   TabelaLinha,
 } from "@/components/ui/table";
 import { AreaTexto } from "@/components/ui/textarea";
-import { B94Logotipo, SafiraLogotipo } from "@/components/brand";
+import { B94Logotipo, SafiraLink } from "@/components/brand";
 import {
   Dica,
   DicaConteudo,
   DicaProvedor,
   DicaGatilho,
 } from "@/components/ui/tooltip";
+import { montarBlocos } from "@/lib/b94/blocos";
 import { copiarBloco } from "@/lib/b94/copy";
 import { obterPrimeiroAnoConreaj } from "@/lib/b94/conreaj";
 import { formatarExibicao } from "@/lib/b94/format";
@@ -149,58 +151,41 @@ export function B94EasyAreaTrabalho() {
     });
   });
 
-  const anos = [...valoresPorAno.keys()].sort(
-    (a, b) => b - a,
+  const anos = [...valoresPorAno.keys()].sort((a, b) => b - a);
+  const mesesExibicao = Object.keys(blocos[0]?.linhas ?? {}).reverse();
+  const blocosExibicao = montarBlocos(
+    anos,
+    mesesExibicao,
+    (mes, ano) => valoresPorAno.get(ano)?.[mes] ?? 0,
+    "/",
   );
-  const blocosExibicao: BlocoB94[] = [];
-  for (let i = 0; i < anos.length; i += 5) {
-    const colunas = anos.slice(i, i + 5);
-    blocosExibicao.push({
-      periodo: `${colunas[0]}/${colunas[colunas.length - 1]}`,
-      colunas,
-      linhas: Object.fromEntries(
-        Object.keys(blocos[0]?.linhas ?? {})
-          .reverse()
-          .map((mes) => [
-            mes,
-            colunas.map((ano) => valoresPorAno.get(ano)?.[mes] ?? 0),
-          ]),
-      ),
-    });
-  }
+
+  const cabecalho = (
+    <Cabecalho
+      esquerda={
+        <>
+          <SafiraLink
+            ariaLabel="Voltar ao SAFIRA"
+            classeLogotipo="text-sm text-muted-foreground"
+            animado={false}
+          />
+          <button
+            type="button"
+            className="group flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-foreground"
+            aria-label="Recarregar página"
+            onClick={() => window.location.reload()}
+          >
+            <B94Logotipo />
+          </button>
+        </>
+      }
+    />
+  );
 
   return (
     <DicaProvedor>
-      <main className="relative min-h-screen overflow-hidden bg-background text-foreground">
-        <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-60 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
-        <Cabecalho
-          esquerda={
-            <div className="flex items-center gap-4">
-              <Link
-                href="/"
-                className="flex items-center gap-2 text-foreground no-underline"
-                aria-label="Voltar ao SAFIRA"
-              >
-                <img
-                  src="/safira.png"
-                  alt="SAFIRA"
-                  className="h-7 w-7 rounded-full object-cover shadow-[0_0_0_3px_var(--background)]"
-                />
-                <SafiraLogotipo className="text-sm text-muted-foreground" />
-              </Link>
-              <button
-                type="button"
-                className="group flex cursor-pointer items-center gap-2 border-0 bg-transparent p-0 text-foreground"
-                aria-label="Recarregar página"
-                onClick={() => window.location.reload()}
-              >
-                <B94Logotipo />
-              </button>
-            </div>
-          }
-        />
-
-        <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24">
+      <PaginaBase cabecalho={cabecalho}>
+        <ConteudoPagina>
           {!blocos.length ? (
             <section className="mx-auto max-w-4xl">
               <div className="mb-12 max-w-xl">
@@ -302,22 +287,25 @@ export function B94EasyAreaTrabalho() {
                   </span>
                   <Dica>
                     <DicaGatilho asChild>
-                      <Botao
-                        variant="ghost"
-                        size="icon"
-                        className="group size-10 cursor-pointer border-0 bg-transparent p-0 hover:bg-transparent hover:text-foreground focus-visible:ring-0"
+                      <BotaoIcone
+                        className="cursor-pointer"
                         onClick={resetar}
                         aria-label="Nova consulta"
                       >
-                        <RotateCcw className="size-5 transition-opacity duration-200 group-hover:opacity-60" />
-                      </Botao>
+                        <RotateCcw className={CLASSE_ICONE_INTERATIVO} />
+                      </BotaoIcone>
                     </DicaGatilho>
                     <DicaConteudo>Nova consulta</DicaConteudo>
                   </Dica>
                 </div>
               </div>
               <div className="space-y-10">
-                {blocosExibicao.map((bloco) => (
+                {blocosExibicao.map((bloco) => {
+                  const copiado = periodoCopiado === bloco.periodo;
+                  const rotuloCopia = copiado
+                    ? "Valores copiados"
+                    : "Copiar valores";
+                  return (
                   <Cartao
                     key={bloco.periodo}
                     className="overflow-hidden rounded-xl border-border/60 bg-card/80 shadow-[0_20px_60px_-40px_rgba(13,74,134,0.28)]"
@@ -328,35 +316,23 @@ export function B94EasyAreaTrabalho() {
                       </CartaoTitulo>
                       <div className="flex items-center gap-1">
                         <span className="text-xs text-muted-foreground">
-                          {periodoCopiado === bloco.periodo
-                            ? "Valores copiados"
-                            : "Copiar valores"}
+                          {rotuloCopia}
                         </span>
                         <Dica>
                           <DicaGatilho asChild>
-                            <Botao
-                              variant="ghost"
-                              size="icon"
-                              className="group size-10 cursor-pointer border-0 bg-transparent p-0 hover:bg-transparent hover:text-foreground focus-visible:ring-0"
+                            <BotaoIcone
+                              className="cursor-pointer"
                               onClick={() => copiar(bloco)}
-                              aria-label={
-                                periodoCopiado === bloco.periodo
-                                  ? "Valores copiados"
-                                  : "Copiar valores"
-                              }
+                              aria-label={rotuloCopia}
                             >
-                              {periodoCopiado === bloco.periodo ? (
+                              {copiado ? (
                                 <Check className="size-5 text-emerald-600" />
                               ) : (
-                                <Clipboard className="size-5 transition-opacity duration-200 group-hover:opacity-60" />
+                                <Clipboard className={CLASSE_ICONE_INTERATIVO} />
                               )}
-                            </Botao>
+                            </BotaoIcone>
                           </DicaGatilho>
-                          <DicaConteudo>
-                            {periodoCopiado === bloco.periodo
-                              ? "Valores copiados"
-                              : "Copiar valores"}
-                          </DicaConteudo>
+                          <DicaConteudo>{rotuloCopia}</DicaConteudo>
                         </Dica>
                       </div>
                     </CartaoCabecalho>
@@ -395,12 +371,13 @@ export function B94EasyAreaTrabalho() {
                       </Tabela>
                     </CartaoConteudo>
                   </Cartao>
-                ))}
+                  );
+                })}
               </div>
             </section>
           )}
-        </div>
-      </main>
+        </ConteudoPagina>
+      </PaginaBase>
     </DicaProvedor>
   );
 }

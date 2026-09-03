@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(cd \"C:\\Users\\fafam\\Desktop\\code\\safira\" && git mv \"src/app/b94easy\" \"src/app/b94+\" 2>&1)",
-      "Bash(cd \"C:\\Users\\fafam\\Desktop\\code\\safira\" && npx next build 2>&1 | Select-Object -Last 60)"
-    ]
-  }
-}

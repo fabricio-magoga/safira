@@ -61,6 +61,6 @@ export function ProvedorTema({ children }: { children: ReactNode }) {
   );
 }
 
-export function usarTema() {
+export function useTema() {
   return useContext(ContextoTema);
 }

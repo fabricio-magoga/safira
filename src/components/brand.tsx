@@ -1,6 +1,42 @@
+import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/cn";
+
 const estiloLogotipo = {
   fontFamily: '"Arial Black", "Helvetica Neue", sans-serif',
 } as const;
+
+type PropsSafiraLink = {
+  ariaLabel?: string;
+  classeLogotipo?: string;
+  animado?: boolean;
+};
+
+export function SafiraLink({
+  ariaLabel = "SAFIRA",
+  classeLogotipo,
+  animado = true,
+}: PropsSafiraLink) {
+  return (
+    <Link
+      href="/"
+      className="group flex items-center gap-2 text-foreground no-underline"
+      aria-label={ariaLabel}
+    >
+      <Image
+        src="/safira.png"
+        alt="SAFIRA"
+        width={28}
+        height={28}
+        className={cn(
+          "rounded-full object-cover shadow-[0_0_0_3px_var(--background)]",
+          animado && "transition-transform duration-300 group-hover:scale-110",
+        )}
+      />
+      <SafiraLogotipo className={classeLogotipo} />
+    </Link>
+  );
+}
 
 export function B94Logotipo({ className = "text-lg" }: { className?: string }) {
   return (
