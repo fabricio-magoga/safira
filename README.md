@@ -140,8 +140,10 @@ safira/
 │   ├── app/                        # App Router (rotas, layouts, API)
 │   │   ├── api/
 │   │   │   ├── analyze-b94/route.ts    # POST — análise CONREAJ + PDF
+│   │   │   ├── dashboard/              # Métricas e atividade do painel
 │   │   │   └── health/route.ts         # GET  — health check
 │   │   ├── b94+/page.tsx           # Rota do módulo B94+
+│   │   ├── dashboard/               # Painel de indicadores (acesso restrito)
 │   │   ├── sobre/page.tsx          # Guia de uso e créditos
 │   │   ├── layout.tsx              # Layout raiz (fontes, tema, metadados)
 │   │   ├── page.tsx                # Página inicial (hub de módulos)
@@ -160,21 +162,23 @@ safira/
 │   │   │   └── b94-mais-workspace.tsx
 │   │   ├── app-header.tsx          # Cabeçalho global
 │   │   ├── brand.tsx               # Identidade visual (logotipos e links)
+│   │   ├── dashboard/               # Painel: indicadores, gráfico, acesso
 │   │   ├── page-shell.tsx          # Casca padrão de página (fundo, cabeçalho, container)
 │   │   ├── theme-provider.tsx      # Contexto de tema (claro/escuro)
 │   │   └── theme-toggle.tsx        # Alternador de tema
 │   │
 │   ├── lib/
 │   │   ├── cn.ts                   # Utilitário de composição de classes
-│   │   └── b94/                    # Domínio B94+ (puro, sem dependência de UI)
-│   │       ├── blocos.ts           # Agrupamento de anos em blocos
-│   │       ├── conreaj.ts          # Parser dos índices CONREAJ
-│   │       ├── copy.ts             # Serialização para área de transferência
-│   │       ├── format.ts           # Formatação de valores
-│   │       ├── inss-pdf.ts         # Extração de matrizes do PDF
-│   │       ├── numero.ts           # Conversão numérica pt-BR
-│   │       ├── pdf-text.ts         # Extração de linhas via unpdf
-│   │       └── types.ts            # Contratos compartilhados (front/back)
+│   │   ├── b94/                    # Domínio B94+ (puro, sem dependência de UI)
+│   │   │   ├── blocos.ts           # Agrupamento de anos em blocos
+│   │   │   ├── conreaj.ts          # Parser dos índices CONREAJ
+│   │   │   ├── copy.ts             # Serialização para área de transferência
+│   │   │   ├── format.ts           # Formatação de valores
+│   │   │   ├── inss-pdf.ts         # Extração de matrizes do PDF
+│   │   │   ├── numero.ts           # Conversão numérica pt-BR
+│   │   │   ├── pdf-text.ts         # Extração de linhas via unpdf
+│   │   │   └── types.ts            # Contratos compartilhados (front/back)
+│   │   └── dashboard/              # Estatísticas, sessão e formatação do painel
 │   │
 │   └── store/
 │       └── b94-store.ts            # Estado global do workspace (Zustand)
