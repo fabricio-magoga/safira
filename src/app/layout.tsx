@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { BatimentoCardiaco } from "@/components/dashboard/batimento-cardiaco";
 import { ProvedorTema } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -41,6 +42,7 @@ export default function LayoutRaiz({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full" suppressHydrationWarning>
         <ProvedorTema>{children}</ProvedorTema>
+        <BatimentoCardiaco />
       </body>
     </html>
   );
