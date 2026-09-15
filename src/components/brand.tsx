@@ -47,7 +47,7 @@ export function B94Logotipo({ className = "text-lg" }: { className?: string }) {
       <span className="leading-none text-[#0F52BA]">b</span>
       <span className="leading-none text-[#f3c75b]">9</span>
       <span className="leading-none text-[#2a9d5d]">4</span>
-      <span className="ml-1 leading-none text-[#0F52BA]">+</span>
+      <span className="ml-1 leading-none text-[#c44d4d]">+</span>
     </span>
   );
 }

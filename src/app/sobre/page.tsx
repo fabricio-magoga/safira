@@ -145,6 +145,20 @@ export default function PaginaSobre() {
                     Encontrou um erro?
                   </h2>
                 </div>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                  Envie uma mensagem informando o que aconteceu e, se possível,
+                  as infomações inseridas com uma imagem da tela.
+                </p>
+                <LinkContato
+                  href={`mailto:${EMAIL_CONTATO}?subject=Relato%20de%20erro%20no%20SAFIRA`}
+                  className="mt-5 font-medium"
+                >
+                  <Mail className="size-4" />
+                  reportar erro
+                </LinkContato>
+              </CartaoDestaque>
+
+              <CartaoDestaque className="shadow-none">
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   créditos
                 </p>

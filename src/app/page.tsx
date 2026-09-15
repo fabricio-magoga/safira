@@ -32,7 +32,7 @@ export default function PaginaInicial() {
                 <B94Logotipo className="text-2xl sm:text-3xl" />
                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
                   É um módulo do SAFIRA que facilita a análise de benefícios
-                  B94, permitindo análises deforma mais rápida e automática.
+                  B94, permitindo análises de forma mais rápida e automática.
                 </p>
               </div>
               <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-opacity group-hover:opacity-70" />
