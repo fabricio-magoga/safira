@@ -84,7 +84,7 @@ body {
   margin: 0;
   background: linear-gradient(180deg, #f7fbff 0%, #edf4ff 100%);
   color: var(--foreground);
-  font-family: "Geist", "Helvetica Neue", sans-serif;
+  font-family: var(--font-geist-sans), "Helvetica Neue", sans-serif;
 }
 button,
 textarea,
