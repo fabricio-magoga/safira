@@ -19,6 +19,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 :root {
