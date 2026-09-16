@@ -20,7 +20,8 @@ export default function PaginaInicial() {
             </p>
           </div>
 
-          <div className="w-full max-w-2xl">
+          <div className="w-full max-w-2xl space-y-4">
+            {/* Card B94 */}
             <Link
               href="/b94+"
               className={cn(
@@ -33,6 +34,28 @@ export default function PaginaInicial() {
                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
                   É um módulo do SAFIRA que facilita a análise de benefícios
                   B94, permitindo análises de forma mais rápida e automática.
+                </p>
+              </div>
+              <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-opacity group-hover:opacity-70" />
+            </Link>
+
+            {/* Novo Card: Calculadora de Contribuições (Extensão Firefox) */}
+            <Link
+              href="https://addons.mozilla.org/pt-BR/firefox/addon/calc-contribui%C3%A7%C3%B5es-em-atraso/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                CLASSE_CARTAO_DESTAQUE,
+                "group flex items-center justify-between gap-4 px-5 py-5 text-left no-underline hover:border-primary/40 hover:bg-card",
+              )}
+            >
+              <div>
+                <span className="block text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  Calculadora de Contribuições em Atraso
+                </span>
+                <p className="mt-2 max-w-md text-sm text-muted-foreground">
+                  Instale a extensão para o seu navegador e realize os cálculos de
+                  pendências automaticamente. (Disponível apenas para Firefox)
                 </p>
               </div>
               <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-opacity group-hover:opacity-70" />
