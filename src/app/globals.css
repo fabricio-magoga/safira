@@ -19,12 +19,21 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
+  
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-warning-text: var(--warning-text);
+  --color-error-bg: var(--error-bg);
+  --color-error-border: var(--error-border);
+  --color-error-text: var(--error-text);
+  
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 :root {
   --background: #edf4ff;
+  --background-gradient-start: #f7fbff;
   --foreground: #12395b;
   --card: #f9fbff;
   --card-foreground: #12395b;
@@ -50,44 +59,48 @@
 }
 
 .dark {
-  --background: #02090f;
-  --foreground: #ebf4ff;
-  --card: #02090f;
-  --card-foreground: #ebf4ff;
+  --background: #02050c;
+  --background-gradient-start: #010409;
+  --foreground: #f0f6fc;
+  --card: #02050c;
+  --card-foreground: #f0f6fc;
   --primary: #0f52ba;
   --primary-foreground: #ffffff;
-  --secondary: #123c67;
+  --secondary: #0f172a;
   --secondary-foreground: #ebf4ff;
-  --muted: #0d1f38;
-  --muted-foreground: #a9c0dd;
-  --accent: #163d69;
+  --muted: #0c1322;
+  --muted-foreground: #94a3b8;
+  --accent: #111a2e;
   --accent-foreground: #ebf4ff;
-  --border: rgba(15, 82, 186, 0.35);
-  --input: #163a64;
-  --ring: rgba(15, 82, 186, 0.45);
+  --border: rgba(15, 82, 186, 0.25);
+  --input: #0f172a;
+  --ring: rgba(13, 67, 148, 0.45);
   --destructive: #ff8a7a;
-  --warning-bg: #2a1b09;
+  --warning-bg: #1c1305;
   --warning-border: #f59e0b;
   --warning-text: #fef3c7;
-  --error-bg: #2b0d11;
+  --error-bg: #1f080a;
   --error-border: #f87171;
   --error-text: #fecaca;
-  --grid-color: rgba(15, 82, 186, 0.08);
+  --grid-color: rgba(255, 255, 255, 0.04);
 }
 
 * {
   box-sizing: border-box;
 }
+
 html,
 body {
   min-height: 100%;
 }
+
 body {
   margin: 0;
-  background: linear-gradient(180deg, #f7fbff 0%, #edf4ff 100%);
+  background: linear-gradient(180deg, var(--background-gradient-start) 0%, var(--background) 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Helvetica Neue", sans-serif;
 }
+
 button,
 textarea,
 input {
@@ -99,8 +112,4 @@ input {
     linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
   background-size: 36px 36px;
-}
-
-.dark body {
-  background: linear-gradient(180deg, #071827 0%, #0b1e32 100%);
 }

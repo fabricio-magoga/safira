@@ -126,10 +126,6 @@ export default function PaginaSobre() {
               Como usar o{" "}
               <B94Logotipo className="inline text-2xl sm:text-3xl" />
             </h2>
-            <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
-              Organize os dados do CONREAJ e extraia os valores PRISMA do PDF em
-              poucos passos.
-            </p>
           </div>
 
           <div className="space-y-3">
