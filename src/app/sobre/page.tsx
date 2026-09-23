@@ -22,7 +22,7 @@ const PASSOS: Passo[] = [
   {
     titulo: "Copie e Cole a tela do CONREAJ",
     descricao:
-      "No SIBE, abra o relatório do CONREAJ e pressione Ctrl+A para selecionar a tela inteira, depois Ctrl+C para copiar. Vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema extrairá automaticamente os dados do beneficiário e os índices de reajuste.",
+      "No SIBE, abra o relatório do CONREAJ. Se ele possuir mais de uma página, mude a exibição para o máximo de páginas possível. Depois que tudo estiver em uma só página, pressione Ctrl+A para selecionar a tela inteira e, em seguida, Ctrl+C para copiar. Vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema extrairá automaticamente os dados do beneficiário e os índices de reajuste.",
   },
   {
     titulo: "Adicione o PDF",
