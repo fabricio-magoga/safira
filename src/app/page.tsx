@@ -40,7 +40,7 @@ export default function PaginaInicial() {
             </Link>
 
             {/* Novo Card: Calculadora de Contribuições (Extensão Firefox) */}
-            <Link
+            {/* <Link
               href="https://addons.mozilla.org/pt-BR/firefox/addon/calc-contribui%C3%A7%C3%B5es-em-atraso/"
               target="_blank"
               rel="noopener noreferrer"
@@ -59,7 +59,7 @@ export default function PaginaInicial() {
                 </p>
               </div>
               <ArrowUpRight className="size-5 shrink-0 text-muted-foreground transition-opacity group-hover:opacity-70" />
-            </Link>
+            </Link> */}
           </div>
         </section>
       </ConteudoPagina>
