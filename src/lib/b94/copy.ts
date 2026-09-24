@@ -1,7 +1,10 @@
 // Camada apresentação/copiar para a área de transferência do navegador com fallback (execCommand).
 
+// copy.ts
 import type { ValorCelula } from "./types";
 import { formatarCopia } from "./format";
+import { obterSalarioMinimo } from "./salario-minimo";
+import { converterValorBr } from "./numero";
 
 export async function copiarBloco(
   linhas: Record<string, ValorCelula[]>,
@@ -21,7 +24,28 @@ export async function copiarBloco(
         return;
       }
 
-      const formatado = formatarCopia(valor);
+      // Converte o valor para número
+      let valorNumerico: number | null = null;
+      if (typeof valor === "number") {
+        valorNumerico = valor;
+      } else if (typeof valor === "string") {
+        valorNumerico = converterValorBr(valor);
+      }
+
+      // Verifica se o valor é menor que o salário mínimo vigente
+      const salarioMinimo = obterSalarioMinimo(ano, mes);
+      let sufixo = "";
+
+      if (
+        valorNumerico !== null &&
+        salarioMinimo !== null &&
+        valorNumerico > 0 &&
+        valorNumerico < salarioMinimo
+      ) {
+        sufixo = " s";
+      }
+
+      const formatado = formatarCopia(valor, sufixo);
       if (formatado !== null) {
         itens.push(formatado);
       }
