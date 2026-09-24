@@ -1,3 +1,5 @@
+// Agrupador genérico. Pega a matriz de meses/anos e a particiona em blocos de 5 anos (ANOS_POR_BLOCO).
+
 import type { BlocoB94, ValorCelula } from "./types";
 
 export const ANOS_POR_BLOCO = 5;

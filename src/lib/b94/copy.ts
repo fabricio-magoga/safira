@@ -1,3 +1,5 @@
+// Camada apresentação/copiar para a área de transferência do navegador com fallback (execCommand).
+
 import type { ValorCelula } from "./types";
 import { formatarCopia } from "./format";
 

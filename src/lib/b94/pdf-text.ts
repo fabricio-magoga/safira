@@ -1,3 +1,6 @@
+// Camada de infraestrutura/I/O de PDF. Usa a biblioteca unpdf para extrair fragmentos de texto 
+// e faz a reconstrução espacial de linhas baseando-se nas coordenadas $(x, y)$
+
 import { extractTextItems } from "unpdf";
 
 type TrechoTexto = {

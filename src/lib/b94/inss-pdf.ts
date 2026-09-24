@@ -1,3 +1,6 @@
+// Regra de negócio do INSS. Cruza o texto vindo do PDF com o índice CONREAJ construído 
+// para identificar se há contribuição em cada mês/ano.
+
 import type { BlocoB94, ValorCelula, IndiceConreaj } from "./types";
 import { montarBlocos } from "./blocos";
 import { converterValorBr } from "./numero";

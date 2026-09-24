@@ -1,3 +1,5 @@
+// Camada de formatação para a área de transferência do navegador com fallback (execCommand).
+
 import type { ValorCelula } from "./types";
 
 export function formatarCopia(valor: ValorCelula): string | null {

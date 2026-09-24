@@ -1,3 +1,6 @@
+// Parser de arquivo/texto do CONREAJ. Extrai datas de início, dados do segurado/espécie 
+// e mapeia o histórico de reajustes por ano (Map<number, number>)
+
 import type { IndiceConreaj } from "./types";
 import { PADRAO_VALOR_BR, converterValorBr } from "./numero";
 
