@@ -1,4 +1,4 @@
-// Regra de negócio do INSS. Cruza o texto vindo do PDF com o índice CONREAJ construído 
+// Regra de negócio do INSS. Cruza o texto vindo do PDF com o índice CONREAJ construído
 // para identificar se há contribuição em cada mês/ano.
 
 import type { BlocoB94, ValorCelula, IndiceConreaj } from "./types";
@@ -26,7 +26,11 @@ const LINHA_MES =
 const DINHEIRO = /\d[\d.]*,\d{1,2}/g;
 
 function celulasDaTabela(linha: string): string[] {
-  const separador = linha.includes("!") ? "!" : linha.includes("|") ? "|" : null;
+  const separador = linha.includes("!")
+    ? "!"
+    : linha.includes("|")
+      ? "|"
+      : null;
   if (!separador) return [];
 
   return linha
@@ -68,19 +72,23 @@ export function extrairMatrizes(
   linhasPagina: string[][],
   dadosConreaj: IndiceConreaj,
 ): BlocoB94[] {
-  const matriz: Record<string, Record<number, ValorCelula>> = Object.fromEntries(
-    MESES.map((mes) => [mes, {}]),
-  );
+  const matriz: Record<
+    string,
+    Record<number, ValorCelula>
+  > = Object.fromEntries(MESES.map((mes) => [mes, {}]));
   const anosEncontrados = new Set<number>();
 
-  for (const linhas of linhasPagina) {
-    let anosAtuais: number[] = [];
+  // DECLARADO FORA DO LOOP DAS PÁGINAS:
+  // Mantém os anos da tabela atual ativos mesmo na troca de página
+  let anosAtuais: number[] = [];
 
+  for (const linhas of linhasPagina) {
     for (const linhaOriginal of linhas) {
       const linha = linhaOriginal.trim();
       const celulasTab = celulasDaTabela(linha);
       const celulaCab = celulasTab[0]?.replace(/\\/g, "/").toUpperCase();
 
+      // Se encontrar um NOVO cabeçalho explicito de M/A, atualiza os anos
       if (
         (celulaCab === "M/A" && celulasTab.length > 0) ||
         /^M[\\/]A\b/i.test(linha)
@@ -94,43 +102,51 @@ export function extrairMatrizes(
       }
 
       const dadosMes = celulasMes(linha);
+
+      // Se for uma linha de mês válida e temos anos ativos pendentes no contexto
       if (!dadosMes || !anosAtuais.length) continue;
 
       for (let i = 0; i < anosAtuais.length; i += 1) {
         const ano = anosAtuais[i];
         const celula = dadosMes.celulas[i] ?? "";
+
         if (prismaTemContrib(celula)) {
-          matriz[dadosMes.mes][ano] =
-            dadosConreaj.get(ano) ?? `CONREAJ ${ano}`;
+          matriz[dadosMes.mes][ano] = dadosConreaj.get(ano) ?? `CONREAJ ${ano}`;
         } else if (!(ano in matriz[dadosMes.mes])) {
           matriz[dadosMes.mes][ano] = 0;
         }
       }
+
+      // REGRA DE FECHAMENTO:
+      // A tabela só encerra o bloco de anos quando processa o mês de JAN
+      if (dadosMes.mes === "JAN") {
+        anosAtuais = [];
+      }
     }
   }
 
-// inss-pdf.ts
+  const anosConreaj = [...dadosConreaj.keys()];
+  const anoInicioConreaj = anosConreaj.length
+    ? Math.min(...anosConreaj)
+    : undefined;
 
-const anosConreaj = [...dadosConreaj.keys()];
-const anoInicioConreaj = anosConreaj.length ? Math.min(...anosConreaj) : undefined;
+  const anos = [...anosEncontrados]
+    .filter((ano) => {
+      // 1. O ano precisa existir no CONREAJ e respeitar o ano inicial
+      const ehValidoNoConreaj =
+        dadosConreaj.has(ano) &&
+        anoInicioConreaj !== undefined &&
+        ano >= anoInicioConreaj;
 
-const anos = [...anosEncontrados]
-  .filter((ano) => {
-    // 1. O ano precisa existir no CONREAJ e respeitar o ano inicial
-    const ehValidoNoConreaj =
-      dadosConreaj.has(ano) &&
-      anoInicioConreaj !== undefined &&
-      ano >= anoInicioConreaj;
+      if (!ehValidoNoConreaj) return false;
 
-    if (!ehValidoNoConreaj) return false;
+      // 2. Garante que o ano possui pelo menos UM mês com valor de contribuição real
+      return MESES.some((mes) => {
+        const val = matriz[mes][ano];
+        return val !== 0 && val !== "-" && val !== undefined && val !== null;
+      });
+    })
+    .sort((a, b) => a - b);
 
-    // 2. Garante que o ano possui pelo menos UM mês com valor de contribuição real
-    return MESES.some((mes) => {
-      const val = matriz[mes][ano];
-      return val !== 0 && val !== "-" && val !== undefined && val !== null;
-    });
-  })
-  .sort((a, b) => a - b);
-
-return montarBlocos(anos, MESES, (mes, ano) => matriz[mes][ano] ?? 0);
+  return montarBlocos(anos, MESES, (mes, ano) => matriz[mes][ano] ?? 0);
 }
