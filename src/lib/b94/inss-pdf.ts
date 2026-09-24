@@ -109,17 +109,28 @@ export function extrairMatrizes(
     }
   }
 
-  const anoInicioConreaj = dadosConreaj.keys().next().value as
-    | number
-    | undefined;
-  const anos = [...anosEncontrados]
-    .filter(
-      (ano) =>
-        dadosConreaj.has(ano) &&
-        anoInicioConreaj !== undefined &&
-        ano >= anoInicioConreaj,
-    )
-    .sort((a, b) => a - b);
+// inss-pdf.ts
 
-  return montarBlocos(anos, MESES, (mes, ano) => matriz[mes][ano] ?? 0);
+const anosConreaj = [...dadosConreaj.keys()];
+const anoInicioConreaj = anosConreaj.length ? Math.min(...anosConreaj) : undefined;
+
+const anos = [...anosEncontrados]
+  .filter((ano) => {
+    // 1. O ano precisa existir no CONREAJ e respeitar o ano inicial
+    const ehValidoNoConreaj =
+      dadosConreaj.has(ano) &&
+      anoInicioConreaj !== undefined &&
+      ano >= anoInicioConreaj;
+
+    if (!ehValidoNoConreaj) return false;
+
+    // 2. Garante que o ano possui pelo menos UM mês com valor de contribuição real
+    return MESES.some((mes) => {
+      const val = matriz[mes][ano];
+      return val !== 0 && val !== "-" && val !== undefined && val !== null;
+    });
+  })
+  .sort((a, b) => a - b);
+
+return montarBlocos(anos, MESES, (mes, ano) => matriz[mes][ano] ?? 0);
 }
