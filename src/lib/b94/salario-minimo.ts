@@ -89,7 +89,7 @@ export async function carregarSalariosMinimos(): Promise<void> {
 
     const historicoBcb: HistoricoSalario[] = dados
       .map((item) => {
-        const [dia, mes, ano] = item.data.split("/").map(Number);
+        const [mes, ano] = item.data.split("/").map(Number);
         return {
           ano,
           mes,

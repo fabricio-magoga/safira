@@ -54,8 +54,9 @@ import type { ValorCelula } from "@/lib/b94/types";
 import { usarStoreB94, type BlocoB94 } from "@/store/b94-store";
 
 export function B94MaisAreaTrabalho() {
-  const { textoConreaj, defTextoConreaj, blocos, defBlocos, resetar } =
-    usarStoreB94();
+  const {textoConreaj, defTextoConreaj, blocos, defBlocos, resetar, salariosMinimos, defSalariosMinimos,
+  } = usarStoreB94();
+
   const [arquivo, defArquivo] = useState<File | null>(null);
   const [carregando, defCarregando] = useState(false);
   const [erro, defErro] = useState("");
@@ -73,14 +74,16 @@ export function B94MaisAreaTrabalho() {
     };
   }, []);
 
-  // Efeito para carregar histórico de salários mínimos (ou configurações iniciais)
+  // Efeito para carregar histórico de salários mínimos do Banco Central
   useEffect(() => {
     const carregarSalariosMinimos = async () => {
       try {
         const resposta = await fetch("/api/salarios-minimos");
         if (resposta.ok) {
           const dados = await resposta.json();
-          // Aqui você pode armazenar no estado ou store os salários mínimos
+          if (Array.isArray(dados)) {
+            defSalariosMinimos(dados);
+          }
         }
       } catch (erroSalarios) {
         console.error("Erro ao carregar salários mínimos:", erroSalarios);
@@ -88,7 +91,7 @@ export function B94MaisAreaTrabalho() {
     };
 
     carregarSalariosMinimos();
-  }, []);
+  }, [defSalariosMinimos]);
 
   const processar = async () => {
     if (!textoConreaj.trim()) {
@@ -126,10 +129,29 @@ export function B94MaisAreaTrabalho() {
         defTipoAlerta("warning");
         throw new Error("Nenhuma matriz foi encontrada no PDF.");
       }
+
       const dataInicio = obterDataInicioConreaj(textoConreaj);
       const anoInicio =
         dataInicio?.ano ?? obterPrimeiroAnoConreaj(textoConreaj);
       const mesInicio = dataInicio?.mes ?? 1;
+
+      // Ordena os salários mínimos do mais recente para o mais antigo para facilitar a busca
+      const salariosOrdenados = [...salariosMinimos].sort((a, b) => {
+        const [, m1, y1] = a.data.split("/");
+        const [, m2, y2] = b.data.split("/");
+        return Number(y2) * 100 + Number(m2) - (Number(y1) * 100 + Number(m1));
+      });
+
+      // Função auxiliar para encontrar a metade do salário mínimo de uma data específica
+      const obterMetadeSM = (anoAlvo: number, mesAlvo: number) => {
+        const dataBusca = anoAlvo * 100 + mesAlvo;
+        const smVigente = salariosOrdenados.find((sm) => {
+          const [, m, y] = sm.data.split("/");
+          return Number(y) * 100 + Number(m) <= dataBusca;
+        });
+        return smVigente ? parseFloat(smVigente.valor) / 2 : 0;
+      };
+
       const blocosFiltrados =
         anoInicio === null
           ? dados.blocks
@@ -138,6 +160,7 @@ export function B94MaisAreaTrabalho() {
                 const indices = bloco.colunas
                   .map((ano, idx) => (ano >= anoInicio ? idx : -1))
                   .filter((idx) => idx >= 0);
+
                 return {
                   ...bloco,
                   colunas: indices.map((idx) => bloco.colunas[idx]),
@@ -146,19 +169,31 @@ export function B94MaisAreaTrabalho() {
                       mes,
                       indices.map((idx) => {
                         const ano = bloco.colunas[idx];
-                        if (
-                          ano === anoInicio &&
-                          (NUMERO_MES[mes] ?? 0) < mesInicio
-                        ) {
+                        const mesNum = NUMERO_MES[mes] ?? 0;
+
+                        // Zera os valores anteriores à DIB
+                        if (ano === anoInicio && mesNum < mesInicio) {
                           return 0;
                         }
-                        return valores[idx] ?? 0;
+
+                        const valorBruto = valores[idx] ?? 0;
+
+                        // Aplica a regra: substitui pela metade do salário mínimo se o valor bruto for menor
+                        if (typeof valorBruto === "number" && valorBruto > 0) {
+                          const metadeSalario = obterMetadeSM(ano, mesNum || 1);
+                          if (metadeSalario > 0 && valorBruto < metadeSalario) {
+                            return metadeSalario;
+                          }
+                        }
+
+                        return valorBruto;
                       }),
                     ]),
                   ),
                 };
               })
               .filter((bloco) => bloco.colunas.length > 0);
+
       if (!blocosFiltrados.length) {
         defTipoAlerta("warning");
         throw new Error("O PDF não possui anos a partir do início do CONREAJ.");
@@ -176,6 +211,8 @@ export function B94MaisAreaTrabalho() {
       defCarregando(false);
     }
   };
+
+  /* eslint-disable react-hooks/preserve-manual-memoization */
 
   // Cálculos pesados otimizados com useMemo
   const { valoresPorAno, anos, extremidades } = useMemo(() => {
