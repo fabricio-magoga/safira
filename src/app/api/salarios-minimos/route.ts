@@ -17,7 +17,7 @@ export async function GET() {
 
     const dados = await resposta.json();
     return NextResponse.json(dados);
-  } catch (erro) {
+  } catch {
     return NextResponse.json(
       { error: "Erro ao carregar salários mínimos" },
       { status: 500 },

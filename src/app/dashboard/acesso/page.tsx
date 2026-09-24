@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { FormularioAcesso } from "@/components/dashboard/formulario-acesso";
 import { ConteudoPagina, PaginaBase } from "@/components/page-shell";
 import { CartaoDestaque } from "@/components/ui/card";
