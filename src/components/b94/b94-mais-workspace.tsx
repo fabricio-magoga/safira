@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   Check,
@@ -13,8 +13,16 @@ import { Cabecalho } from "@/components/app-header";
 import { ConteudoPagina, PaginaBase } from "@/components/page-shell";
 import { Alerta } from "@/components/ui/alert";
 import { Botao } from "@/components/ui/button";
-import { BotaoIcone, CLASSE_ICONE_INTERATIVO } from "@/components/ui/icon-button";
-import { Cartao, CartaoConteudo, CartaoCabecalho, CartaoTitulo } from "@/components/ui/card";
+import {
+  BotaoIcone,
+  CLASSE_ICONE_INTERATIVO,
+} from "@/components/ui/icon-button";
+import {
+  Cartao,
+  CartaoConteudo,
+  CartaoCabecalho,
+  CartaoTitulo,
+} from "@/components/ui/card";
 import {
   Tabela,
   TabelaCorpo,
@@ -33,7 +41,13 @@ import {
 } from "@/components/ui/tooltip";
 import { montarBlocos } from "@/lib/b94/blocos";
 import { copiarBloco } from "@/lib/b94/copy";
-import { NUMERO_MES, obterDataInicioConreaj, obterEspecieConreaj, obterNomeConreaj, obterPrimeiroAnoConreaj } from "@/lib/b94/conreaj";
+import {
+  NUMERO_MES,
+  obterDataInicioConreaj,
+  obterEspecieConreaj,
+  obterNomeConreaj,
+  obterPrimeiroAnoConreaj,
+} from "@/lib/b94/conreaj";
 import { formatarExibicao } from "@/lib/b94/format";
 import { MESES } from "@/lib/b94/inss-pdf";
 import type { ValorCelula } from "@/lib/b94/types";
@@ -47,6 +61,34 @@ export function B94MaisAreaTrabalho() {
   const [erro, defErro] = useState("");
   const [tipoAlerta, defTipoAlerta] = useState<"warning" | "error">("error");
   const [periodoCopiado, defPeriodoCopiado] = useState<string | null>(null);
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Limpeza de timeout ao desmontar o componente para evitar memory leaks
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Efeito para carregar histórico de salários mínimos (ou configurações iniciais)
+  useEffect(() => {
+    const carregarSalariosMinimos = async () => {
+      try {
+        const resposta = await fetch("/api/salarios-minimos");
+        if (resposta.ok) {
+          const dados = await resposta.json();
+          // Aqui você pode armazenar no estado ou store os salários mínimos
+        }
+      } catch (erroSalarios) {
+        console.error("Erro ao carregar salários mínimos:", erroSalarios);
+      }
+    };
+
+    carregarSalariosMinimos();
+  }, []);
 
   const processar = async () => {
     if (!textoConreaj.trim()) {
@@ -85,7 +127,8 @@ export function B94MaisAreaTrabalho() {
         throw new Error("Nenhuma matriz foi encontrada no PDF.");
       }
       const dataInicio = obterDataInicioConreaj(textoConreaj);
-      const anoInicio = dataInicio?.ano ?? obterPrimeiroAnoConreaj(textoConreaj);
+      const anoInicio =
+        dataInicio?.ano ?? obterPrimeiroAnoConreaj(textoConreaj);
       const mesInicio = dataInicio?.mes ?? 1;
       const blocosFiltrados =
         anoInicio === null
@@ -134,11 +177,68 @@ export function B94MaisAreaTrabalho() {
     }
   };
 
+  // Cálculos pesados otimizados com useMemo
+  const { valoresPorAno, anos, extremidades } = useMemo(() => {
+    const mapaValores = new Map<number, Record<string, number | string>>();
+    blocos.forEach((bloco) => {
+      bloco.colunas.forEach((ano, idx) => {
+        mapaValores.set(
+          ano,
+          Object.fromEntries(
+            Object.entries(bloco.linhas).map(([mes, valores]) => [
+              mes,
+              valores[idx] ?? 0,
+            ]),
+          ),
+        );
+      });
+    });
+
+    const listaAnos = [...mapaValores.keys()].sort((a, b) => b - a);
+
+    const conjuntoExtremidades = new Set<string>();
+    if (listaAnos.length) {
+      const ordem: { ano: number; mes: string; valor: ValorCelula }[] = [];
+      for (const ano of listaAnos) {
+        for (const mes of [...MESES].reverse()) {
+          ordem.push({ ano, mes, valor: mapaValores.get(ano)?.[mes] ?? 0 });
+        }
+      }
+      const ehValor = (v: ValorCelula) =>
+        typeof v === "number" ? v !== 0 : v.trim() !== "";
+      const primeiro = ordem.findIndex((c) => ehValor(c.valor));
+      const ultimo =
+        ordem.length -
+        1 -
+        [...ordem].reverse().findIndex((c) => ehValor(c.valor));
+      if (primeiro !== -1) {
+        ordem.forEach((c, i) => {
+          if (i < primeiro || i > ultimo) {
+            conjuntoExtremidades.add(`${c.ano}|${c.mes}`);
+          }
+        });
+      }
+    }
+
+    return {
+      valoresPorAno: mapaValores,
+      anos: listaAnos,
+      extremidades: conjuntoExtremidades,
+    };
+  }, [blocos]);
+
+  const ehExtremidade = useCallback(
+    (ano: number, mes: string) => extremidades.has(`${ano}|${mes}`),
+    [extremidades],
+  );
+
   const copiar = async (bloco: BlocoB94) => {
     try {
       await copiarBloco(bloco.linhas, bloco.colunas, ehExtremidade);
       defPeriodoCopiado(bloco.periodo);
-      window.setTimeout(() => defPeriodoCopiado(null), 2500);
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => defPeriodoCopiado(null), 2500);
     } catch (erroCopia) {
       defTipoAlerta("error");
       defErro(
@@ -149,58 +249,20 @@ export function B94MaisAreaTrabalho() {
     }
   };
 
-  const valoresPorAno = new Map<number, Record<string, number | string>>();
-  blocos.forEach((bloco) => {
-    bloco.colunas.forEach((ano, idx) => {
-      valoresPorAno.set(
-        ano,
-        Object.fromEntries(
-          Object.entries(bloco.linhas).map(([mes, valores]) => [
-            mes,
-            valores[idx] ?? 0,
-          ]),
-        ),
-      );
-    });
-  });
-
-  const anos = [...valoresPorAno.keys()].sort((a, b) => b - a);
-
-  const extremidades = new Set<string>();
-  if (anos.length) {
-    const ordem: { ano: number; mes: string; valor: ValorCelula }[] = [];
-    for (const ano of anos) {
-      for (const mes of [...MESES].reverse()) {
-        ordem.push({ ano, mes, valor: valoresPorAno.get(ano)?.[mes] ?? 0 });
-      }
-    }
-    const ehValor = (v: ValorCelula) =>
-      typeof v === "number" ? v !== 0 : v.trim() !== "";
-    const primeiro = ordem.findIndex((c) => ehValor(c.valor));
-    const ultimo =
-      ordem.length - 1 - [...ordem].reverse().findIndex((c) => ehValor(c.valor));
-    if (primeiro !== -1) {
-      ordem.forEach((c, i) => {
-        if (i < primeiro || i > ultimo) {
-          extremidades.add(`${c.ano}|${c.mes}`);
-        }
-      });
-    }
-  }
-  const ehExtremidade = (ano: number, mes: string) =>
-    extremidades.has(`${ano}|${mes}`);
-
   const nomeBeneficiario = obterNomeConreaj(textoConreaj);
   const especieBeneficiario = obterEspecieConreaj(textoConreaj);
   const dataInicioBeneficio = obterDataInicioConreaj(textoConreaj);
 
-  const mesesExibicao = Object.keys(blocos[0]?.linhas ?? {}).reverse();
-  const blocosExibicao = montarBlocos(
-    anos,
-    mesesExibicao,
-    (mes, ano) => valoresPorAno.get(ano)?.[mes] ?? 0,
-    "/",
-  );
+  // Geração de blocos de exibição memoizada
+  const blocosExibicao = useMemo(() => {
+    const mesesExibicao = Object.keys(blocos[0]?.linhas ?? {}).reverse();
+    return montarBlocos(
+      anos,
+      mesesExibicao,
+      (mes, ano) => valoresPorAno.get(ano)?.[mes] ?? 0,
+      "/",
+    );
+  }, [blocos, anos, valoresPorAno]);
 
   const cabecalho = (
     <Cabecalho
@@ -295,6 +357,7 @@ export function B94MaisAreaTrabalho() {
                   className="cursor-pointer border border-primary/20 bg-primary/90 px-3 font-bold text-primary-foreground opacity-95 transition-opacity hover:bg-primary/90 hover:opacity-95 focus-visible:ring-2 focus-visible:ring-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={carregando}
                   onClick={processar}
+                  aria-busy={carregando}
                 >
                   <span>
                     {carregando ? "Processando dados" : "Aplicar B94+"}
@@ -303,6 +366,7 @@ export function B94MaisAreaTrabalho() {
               </div>
               {erro && (
                 <Alerta
+                  role="alert"
                   variant={tipoAlerta === "warning" ? "warning" : "destructive"}
                   className="mt-4 flex items-center gap-2"
                 >
@@ -341,7 +405,9 @@ export function B94MaisAreaTrabalho() {
                   </Dica>
                 </div>
               </div>
-              {(nomeBeneficiario || especieBeneficiario || dataInicioBeneficio) && (
+              {(nomeBeneficiario ||
+                especieBeneficiario ||
+                dataInicioBeneficio) && (
                 <div className="mb-8 grid gap-3 sm:grid-cols-3">
                   {nomeBeneficiario && (
                     <div className="rounded-xl border border-border/60 bg-card/80 px-4 py-3">
@@ -384,75 +450,82 @@ export function B94MaisAreaTrabalho() {
                     ? "Valores copiados"
                     : "Copiar valores";
                   return (
-                  <Cartao
-                    key={bloco.periodo}
-                    className="overflow-hidden rounded-xl border-border/60 bg-card/80 shadow-[0_20px_60px_-40px_rgba(13,74,134,0.28)]"
-                  >
-                    <CartaoCabecalho className="flex-row items-center justify-between space-y-0 px-5 py-4">
-                      <CartaoTitulo className="font-mono text-xs font-medium tracking-wider text-muted-foreground">
-                        {bloco.periodo}
-                      </CartaoTitulo>
-                      <div className="flex items-center gap-1">
-                        <span className="text-xs text-muted-foreground">
-                          {rotuloCopia}
-                        </span>
-                        <Dica>
-                          <DicaGatilho asChild>
-                            <BotaoIcone
-                              className="cursor-pointer"
-                              onClick={() => copiar(bloco)}
-                              aria-label={rotuloCopia}
-                            >
-                              {copiado ? (
-                                <Check className="size-5 text-emerald-600" />
-                              ) : (
-                                <Clipboard className={CLASSE_ICONE_INTERATIVO} />
-                              )}
-                            </BotaoIcone>
-                          </DicaGatilho>
-                          <DicaConteudo>{rotuloCopia}</DicaConteudo>
-                        </Dica>
-                      </div>
-                    </CartaoCabecalho>
-                    <CartaoConteudo className="overflow-x-auto p-0">
-                      <Tabela>
-                        <TabelaCabecalho>
-                          <TabelaLinha className="border-border/40 hover:bg-transparent">
-                            <TabelaCelulaCab />
-                            {bloco.colunas.map((ano) => (
-                              <TabelaCelulaCab
-                                key={ano}
-                                className="text-right font-mono text-xs font-medium text-muted-foreground"
+                    <Cartao
+                      key={bloco.periodo}
+                      className="overflow-hidden rounded-xl border-border/60 bg-card/80 shadow-[0_20px_60px_-40px_rgba(13,74,134,0.28)]"
+                    >
+                      <CartaoCabecalho className="flex-row items-center justify-between space-y-0 px-5 py-4">
+                        <CartaoTitulo className="font-mono text-xs font-medium tracking-wider text-muted-foreground">
+                          {bloco.periodo}
+                        </CartaoTitulo>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-muted-foreground">
+                            {rotuloCopia}
+                          </span>
+                          <Dica>
+                            <DicaGatilho asChild>
+                              <BotaoIcone
+                                className="cursor-pointer"
+                                onClick={() => copiar(bloco)}
+                                aria-label={rotuloCopia}
                               >
-                                {ano}
-                              </TabelaCelulaCab>
-                            ))}
-                          </TabelaLinha>
-                        </TabelaCabecalho>
-                        <TabelaCorpo>
-                          {Object.entries(bloco.linhas).map(([mes, valores]) => (
-                            <TabelaLinha key={mes} className="border-border/30">
-                              <TabelaCelulaCab className="font-mono text-xs font-medium text-muted-foreground">
-                                {mes}
-                              </TabelaCelulaCab>
-                              {valores.map((valor, idx) => {
-                                const ano = bloco.colunas[idx];
-                                const ehExt = ehExtremidade(ano, mes);
-                                return (
-                                  <TabelaCelula
-                                    key={`${mes}-${idx}`}
-                                    className={`text-right font-mono text-xs ${typeof valor === "string" ? "text-[#b36d00] dark:text-[#ffba4d]" : ""}`}
-                                  >
-                                    {ehExt ? "-" : formatarExibicao(valor)}
-                                  </TabelaCelula>
-                                );
-                              })}
+                                {copiado ? (
+                                  <Check className="size-5 text-emerald-600" />
+                                ) : (
+                                  <Clipboard
+                                    className={CLASSE_ICONE_INTERATIVO}
+                                  />
+                                )}
+                              </BotaoIcone>
+                            </DicaGatilho>
+                            <DicaConteudo>{rotuloCopia}</DicaConteudo>
+                          </Dica>
+                        </div>
+                      </CartaoCabecalho>
+                      <CartaoConteudo className="overflow-x-auto p-0">
+                        <Tabela>
+                          <TabelaCabecalho>
+                            <TabelaLinha className="border-border/40 hover:bg-transparent">
+                              <TabelaCelulaCab />
+                              {bloco.colunas.map((ano) => (
+                                <TabelaCelulaCab
+                                  key={ano}
+                                  className="text-right font-mono text-xs font-medium text-muted-foreground"
+                                >
+                                  {ano}
+                                </TabelaCelulaCab>
+                              ))}
                             </TabelaLinha>
-                          ))}
-                        </TabelaCorpo>
-                      </Tabela>
-                    </CartaoConteudo>
-                  </Cartao>
+                          </TabelaCabecalho>
+                          <TabelaCorpo>
+                            {Object.entries(bloco.linhas).map(
+                              ([mes, valores]) => (
+                                <TabelaLinha
+                                  key={mes}
+                                  className="border-border/30"
+                                >
+                                  <TabelaCelulaCab className="font-mono text-xs font-medium text-muted-foreground">
+                                    {mes}
+                                  </TabelaCelulaCab>
+                                  {valores.map((valor, idx) => {
+                                    const ano = bloco.colunas[idx];
+                                    const ehExt = ehExtremidade(ano, mes);
+                                    return (
+                                      <TabelaCelula
+                                        key={`${mes}-${idx}`}
+                                        className={`text-right font-mono text-xs ${typeof valor === "string" ? "text-[#b36d00] dark:text-[#ffba4d]" : ""}`}
+                                      >
+                                        {ehExt ? "-" : formatarExibicao(valor)}
+                                      </TabelaCelula>
+                                    );
+                                  })}
+                                </TabelaLinha>
+                              ),
+                            )}
+                          </TabelaCorpo>
+                        </Tabela>
+                      </CartaoConteudo>
+                    </Cartao>
                   );
                 })}
               </div>
