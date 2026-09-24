@@ -20,9 +20,14 @@ type Passo = {
 
 const PASSOS: Passo[] = [
   {
-    titulo: "Copie e Cole a tela do CONREAJ",
+    titulo: "SIBE",
     descricao:
-      "No SIBE, abra o relatório do CONREAJ. Se ele possuir mais de uma página, mude a exibição para o máximo de páginas possível. Depois que tudo estiver em uma só página, pressione Ctrl+A para selecionar a tela inteira e, em seguida, Ctrl+C para copiar. Vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema extrairá automaticamente os dados do beneficiário e os índices de reajuste.",
+      "No SIBE, ao eleborar o CONREAJ, você deve digitar a competência final de recebimento do B94 ou B36, depois abra o relatório do CONREAJ. Se ele possuir mais de uma página, mude a exibição para 50 itens por página.",
+  },
+  {
+    titulo: "CONREAJ",
+    descricao:
+      "Depois que tudo estiver em uma só página, pressione Ctrl+A para selecionar a tela inteira e, em seguida, Ctrl+C para copiar. Vá para a tela do B94+ e cole o texto normalmente no campo indicado. O sistema extrairá automaticamente os dados do beneficiário e os índices de reajuste.",
   },
   {
     titulo: "Adicione o PDF",
