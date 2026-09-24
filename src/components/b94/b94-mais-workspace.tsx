@@ -40,6 +40,7 @@ import {
   DicaGatilho,
 } from "@/components/ui/tooltip";
 import { montarBlocos } from "@/lib/b94/blocos";
+import { analisarConreaj } from "@/lib/b94/conreaj";
 import { copiarBloco } from "@/lib/b94/copy";
 import {
   NUMERO_MES,
@@ -54,7 +55,14 @@ import type { ValorCelula } from "@/lib/b94/types";
 import { usarStoreB94, type BlocoB94 } from "@/store/b94-store";
 
 export function B94MaisAreaTrabalho() {
-  const {textoConreaj, defTextoConreaj, blocos, defBlocos, resetar, salariosMinimos, defSalariosMinimos,
+  const {
+    textoConreaj,
+    defTextoConreaj,
+    blocos,
+    defBlocos,
+    resetar,
+    salariosMinimos,
+    defSalariosMinimos,
   } = usarStoreB94();
 
   const [arquivo, defArquivo] = useState<File | null>(null);
@@ -135,6 +143,37 @@ export function B94MaisAreaTrabalho() {
         dataInicio?.ano ?? obterPrimeiroAnoConreaj(textoConreaj);
       const mesInicio = dataInicio?.mes ?? 1;
 
+      // Regra do primeiro mês do benefício:
+      // - meses normais: base de 30 dias e conta 30 - dia;
+      // - fevereiro: base de 28 dias ou 29 em ano bissexto;
+      // - 28/02 em ano bissexto representa os dias 28 e 29 (2 dias);
+      // - 29/02 em ano bissexto representa apenas o dia 29 (1 dia).
+      const ehAnoBissexto = (ano: number) =>
+        ano % 400 === 0 || (ano % 4 === 0 && ano % 100 !== 0);
+
+      const calcularPrimeiroMesProporcional = (
+        valorConreaj: number,
+        ano: number,
+        mes: number,
+        dia: number,
+      ) => {
+        if (mes === 2) {
+          const diasFevereiro = ehAnoBissexto(ano) ? 29 : 28;
+          const dias =
+            ehAnoBissexto(ano) && dia === 28 ? 2 : diasFevereiro - dia + 1;
+
+          return (valorConreaj / diasFevereiro) * dias;
+        }
+
+        return (valorConreaj / 30) * (30 - dia);
+      };
+
+      const dadosConreaj = analisarConreaj(textoConreaj);
+      const valorConreajInicio =
+        anoInicio !== null && anoInicio !== undefined
+          ? (dadosConreaj.get(anoInicio) ?? null)
+          : null;
+
       // Ordena os salários mínimos do mais recente para o mais antigo para facilitar a busca
       const salariosOrdenados = [...salariosMinimos].sort((a, b) => {
         const [, m1, y1] = a.data.split("/");
@@ -177,6 +216,22 @@ export function B94MaisAreaTrabalho() {
                         }
 
                         const valorBruto = valores[idx] ?? 0;
+
+                        // No primeiro mês do primeiro ano, aplica o pró-rata da DIB
+                        // somente uma vez. O último mês permanece intocado.
+                        if (
+                          valorConreajInicio !== null &&
+                          dataInicio &&
+                          ano === anoInicio &&
+                          mesNum === mesInicio
+                        ) {
+                          return calcularPrimeiroMesProporcional(
+                            valorConreajInicio,
+                            ano,
+                            mesNum,
+                            dataInicio.dia,
+                          );
+                        }
 
                         // Aplica a regra: substitui pela metade do salário mínimo se o valor bruto for menor
                         if (typeof valorBruto === "number" && valorBruto > 0) {
