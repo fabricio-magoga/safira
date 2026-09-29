@@ -42,7 +42,7 @@ export async function copiarBloco(
         valorNumerico > 0 &&
         valorNumerico < salarioMinimo
       ) {
-        sufixo = " s";
+        sufixo = " s\n";
       }
 
       const formatado = formatarCopia(valor, sufixo);
